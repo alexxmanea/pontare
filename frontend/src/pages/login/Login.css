@@ -1,0 +1,64 @@
+:root {
+    --login-container-width: 30%;
+    --login-container-height: 70%;
+}
+
+.login-container {
+    width: var(--login-container-width);
+    height: var(--login-container-height);
+    padding-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    align-items: center;
+    background-color: var(--color-foreground);
+    box-sizing: border-box;
+    box-shadow: var(--default-box-shadow);
+    border-radius: 0.3rem;
+    position: relative;
+}
+
+.login-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.login-username {
+    width: 70%;
+    margin-top: 2rem !important;
+}
+
+.login-password {
+    width: 70%;
+}
+
+.login-error {
+    width: 70%;
+    box-sizing: border-box;
+}
+
+.login-submit-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.7rem;
+    align-items: center;
+}
+
+.login-submit {
+    width: 70%;
+    text-transform: none !important;
+    font-weight: bold !important;
+    font-size: 1rem !important;
+}
+
+.login-register {
+    text-transform: none !important;
+    font-size: 1rem !important;
+}
+
+.login-loading {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 2rem;
+}

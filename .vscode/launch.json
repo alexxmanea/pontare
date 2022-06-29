@@ -10,8 +10,8 @@
             "name": "Launch Backend",
             "skipFiles": ["<node_internals>/**"],
             "cwd": "${workspaceFolder}/backend",
-            "program": "${workspaceFolder}/backend/index.js",
-            "runtimeExecutable": "/usr/local/lib/nodejs/node-v16.15.1-linux-armv7l/bin/node"
+            "program": "${workspaceFolder}/backend/src/index.js",
+            "runtimeExecutable": "/usr/local/lib/nodejs/node-v16.15.1-linux-armv7l/bin//node"
         }
     ]
 }

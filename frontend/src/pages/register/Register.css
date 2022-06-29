@@ -1,0 +1,68 @@
+:root {
+    --register-container-width: 30%;
+    --register-container-height: 70%;
+}
+
+.register-container {
+    width: var(--register-container-width);
+    height: var(--register-container-height);
+    padding-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    align-items: center;
+    background-color: var(--color-foreground);
+    box-sizing: border-box;
+    box-shadow: var(--default-box-shadow);
+    border-radius: 0.3rem;
+    position: relative;
+}
+
+.register-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.register-username {
+    width: 70%;
+    margin-top: 2rem !important;
+}
+
+.register-password {
+    width: 70%;
+}
+
+.register-email {
+    width: 70%;
+}
+
+.register-error {
+    width: 70%;
+    box-sizing: border-box;
+}
+
+.register-submit-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.7rem;
+    align-items: center;
+}
+
+.register-submit {
+    width: 70%;
+    text-transform: none !important;
+    font-weight: bold !important;
+    font-size: 1rem !important;
+}
+
+.register-login {
+    text-transform: none !important;
+    font-size: 1rem !important;
+}
+
+.register-loading {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 2rem;
+}
