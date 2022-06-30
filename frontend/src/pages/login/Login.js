@@ -8,6 +8,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
     REST_URL,
     INVALID_CREDENTIALS,
@@ -15,6 +16,8 @@ import {
 } from "../../common/RestApi.js";
 
 const Login = () => {
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -48,6 +51,7 @@ const Login = () => {
                     return;
                 }
                 setErrorMessage(getErrorMessage());
+                navigate("/dashboard")
             })
             .catch((error) => {
                 showLoadingScreen(false);
@@ -141,7 +145,7 @@ const Login = () => {
                     Login
                 </Button>
                 <div>OR</div>
-                <Button className="login-register" variant="text" size="small">
+                <Button className="login-register" variant="text" size="small" onClick={() => navigate("/register")}>
                     Create an account
                 </Button>
             </div>

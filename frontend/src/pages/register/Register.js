@@ -8,6 +8,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
     REST_URL,
     INVALID_TIMESHEET_CREDENTIALS,
@@ -17,6 +18,8 @@ import {
 import { isValidEmail, isInoviumEmail } from "../../common/Utils.js";
 
 const Register = () => {
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
@@ -179,7 +182,11 @@ const Register = () => {
                     Register
                 </Button>
                 <div>OR</div>
-                <Button className="register-login" variant="text" size="small">
+                <Button
+                    className="register-login"
+                    variant="text"
+                    size="small"
+                    onClick={() => navigate("/login")}>
                     Login with an existing account
                 </Button>
             </div>
