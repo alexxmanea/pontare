@@ -1,6 +1,11 @@
 import puppeteer from "puppeteer";
 import moment from "moment";
-import { LOGIN_URL, FIELDS, DATE_FORMAT, DAY_TYPES } from "./Constants.js";
+import {
+    LOGIN_URL,
+    FIELDS,
+    ETRANS_DATE_FORMAT,
+    DAY_TYPES,
+} from "./Constants.js";
 
 const textFieldClearAndType = async (page, element, value) => {
     // Selectare text-field, golire (triplu click pentru a selecta textul existent) si introducere valoare
@@ -85,14 +90,14 @@ const startJob = async (username, password) => {
 
     await navigateToAddPage(page);
 
-    const currentDate = moment().format(DATE_FORMAT);
+    const currentDate = moment().format(ETRANS_DATE_FORMAT);
     await addRecord(page, currentDate, DAY_TYPES.vacation);
 
     await page.screenshot({ path: "example.png", fullPage: true });
     await browser.close();
 };
 
-const addRecord = async (page, date, dayType = DAY_TYPES.work) => {
+const addRecord = async (page, date, dayType = DAY_TYPES.workday) => {
     const project = {
         select: FIELDS.manopera.project.work.select,
         option: FIELDS.manopera.project.work.option,

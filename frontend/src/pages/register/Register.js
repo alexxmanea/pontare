@@ -21,6 +21,7 @@ import {
     USER_EXISTS,
 } from "../../common/RestApi.js";
 import { isValidEmail, isInoviumEmail } from "../../common/Utils.js";
+import { showLoadingScreen } from "../../common/Utils.js";
 
 const SUCCESSFULLY_REGISTERED_TITLE = "Register";
 const SUCCESSFULLY_REGISTERED_MESSAGE =
@@ -46,7 +47,7 @@ const Register = () => {
             return;
         }
 
-        showLoadingScreen(true);
+        showLoadingScreen(setIsLoading, true);
 
         axios
             .post(`${REST_URL}/api/register`, {
@@ -55,7 +56,7 @@ const Register = () => {
                 email: email,
             })
             .then((response) => {
-                showLoadingScreen(false);
+                showLoadingScreen(setIsLoading, false);
 
                 if (response.data === USER_EXISTS) {
                     setErrorMessage(getErrorMessage(USER_EXISTS));
@@ -72,7 +73,7 @@ const Register = () => {
                 setShowRegisteredDialog(true);
             })
             .catch((error) => {
-                showLoadingScreen(false);
+                showLoadingScreen(setIsLoading, false);
                 setErrorMessage(getErrorMessage(SERVER_ERROR));
             });
     };
@@ -111,17 +112,6 @@ const Register = () => {
         }
 
         return "";
-    };
-
-    const showLoadingScreen = (value) => {
-        setIsLoading(value);
-        if (value) {
-            document.getElementsByTagName("body")[0].style =
-                "pointer-events: none";
-        } else {
-            let body = document.getElementsByTagName("body")[0];
-            body.style.removeProperty("pointer-events");
-        }
     };
 
     return (
@@ -205,14 +195,11 @@ const Register = () => {
             />
             <Dialog
                 open={showRegisteredDialog}
-                onClose={() => navigate("/login")}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description">
-                <DialogTitle id="alert-dialog-title">
-                    {SUCCESSFULLY_REGISTERED_TITLE}
-                </DialogTitle>
+                disableBackdropClick
+                disableEscapeKeyDown>
+                <DialogTitle>{SUCCESSFULLY_REGISTERED_TITLE}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
+                    <DialogContentText>
                         {SUCCESSFULLY_REGISTERED_MESSAGE}
                     </DialogContentText>
                 </DialogContent>

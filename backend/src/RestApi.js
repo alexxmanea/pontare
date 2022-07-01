@@ -69,6 +69,10 @@ export const startServer = (httpServer, firebaseDatabase) => {
         response.end();
     });
 
+    httpServer.post("/api/submittimesheet", async (request, response) => {
+        response.end();
+    });
+
     httpServer.listen(REST_PORT, () => {
         console.log(SERVER_STARTED_MESSAGE);
     });

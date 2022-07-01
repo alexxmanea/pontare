@@ -41,16 +41,11 @@ const Navbar = () => {
             </Button>
             <Dialog
                 open={showLogoutDialog}
-                onClose={() => () => setShowLogoutDialog(false)}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description">
-                <DialogTitle id="alert-dialog-title">
-                    {LOGOUT_TITLE}
-                </DialogTitle>
+                disableBackdropClick
+                disableEscapeKeyDown>
+                <DialogTitle>{LOGOUT_TITLE}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        {LOGOUT_MESSAGE}
-                    </DialogContentText>
+                    <DialogContentText>{LOGOUT_MESSAGE}</DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setShowLogoutDialog(false)}>

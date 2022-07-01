@@ -36,3 +36,13 @@ export const isInoviumEmail = (email) => {
 
     return true;
 };
+
+export const showLoadingScreen = (setSpinnerIsLoading, value) => {
+    setSpinnerIsLoading(value);
+    if (value) {
+        document.getElementsByTagName("body")[0].style = "pointer-events: none";
+    } else {
+        let body = document.getElementsByTagName("body")[0];
+        body.style.removeProperty("pointer-events");
+    }
+};

@@ -15,6 +15,7 @@ import {
     SERVER_ERROR,
 } from "../../common/RestApi.js";
 import { setGlobalState } from "../../common/GlobalState.js";
+import { showLoadingScreen } from "../../common/Utils.js";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ const Login = () => {
             return;
         }
 
-        showLoadingScreen(true);
+        showLoadingScreen(setIsLoading, true);
 
         axios
             .post(`${REST_URL}/api/login`, {
@@ -42,7 +43,7 @@ const Login = () => {
                 password: password,
             })
             .then((response) => {
-                showLoadingScreen(false);
+                showLoadingScreen(setIsLoading, false);
 
                 if (response.data === INVALID_CREDENTIALS) {
                     setErrorMessage(getErrorMessage(INVALID_CREDENTIALS));
@@ -53,7 +54,7 @@ const Login = () => {
                 performLogin();
             })
             .catch((error) => {
-                showLoadingScreen(false);
+                showLoadingScreen(setIsLoading, false);
                 setErrorMessage(getErrorMessage(SERVER_ERROR));
             });
     };
@@ -76,17 +77,6 @@ const Login = () => {
         }
 
         return "";
-    };
-
-    const showLoadingScreen = (value) => {
-        setIsLoading(value);
-        if (value) {
-            document.getElementsByTagName("body")[0].style =
-                "pointer-events: none";
-        } else {
-            let body = document.getElementsByTagName("body")[0];
-            body.style.removeProperty("pointer-events");
-        }
     };
 
     const performLogin = () => {

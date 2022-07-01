@@ -30,6 +30,7 @@ export const FIELDS = {
     },
 };
 
-export const DATE_FORMAT = "YYYY-MM-DD";
+export const ETRANS_DATE_FORMAT = "YYYY-MM-DD";
+export const DATE_FORMAT = "DD/MM/YYYY"
 
-export const DAY_TYPES = { work: 0, vacation: 1 };
+export const DAY_TYPES = { workday: "Workday", vacation: "Vacation" };

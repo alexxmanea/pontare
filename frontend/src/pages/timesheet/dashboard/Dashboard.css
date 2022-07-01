@@ -40,7 +40,8 @@
     flex-basis: 100%;
 }
 
-.dashboard-workdays-add {
+.dashboard-workdays-add,
+.dashboard-submit {
     font-weight: bold !important;
     text-transform: none !important;
 }
@@ -53,4 +54,11 @@
 .dashboard-intervals-table {
     width: 100%;
     height: 100%;
+}
+
+.dashboard-submit-loading {
+    margin: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
