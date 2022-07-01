@@ -14,6 +14,7 @@ import {
     INVALID_CREDENTIALS,
     SERVER_ERROR,
 } from "../../common/RestApi.js";
+import { setGlobalState } from "../../common/GlobalState.js";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -23,9 +24,6 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-
-    const handleClickShowPassword = () => setShowPassword(!showPassword);
-    const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
     const handleSubmitLoginInfo = (event) => {
         event.preventDefault();
@@ -51,7 +49,8 @@ const Login = () => {
                     return;
                 }
                 setErrorMessage(getErrorMessage());
-                navigate("/dashboard")
+
+                performLogin();
             })
             .catch((error) => {
                 showLoadingScreen(false);
@@ -90,6 +89,11 @@ const Login = () => {
         }
     };
 
+    const performLogin = () => {
+        setGlobalState("authenticatedUser", username);
+        navigate("/timesheet");
+    };
+
     return (
         <div className="login-container">
             <div className="login-title">E-Trans Automatic Timesheet</div>
@@ -117,8 +121,8 @@ const Login = () => {
                     endAdornment: (
                         <IconButton
                             aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}>
+                            onClick={() => setShowPassword(!showPassword)}
+                            onMouseDown={() => setShowPassword(!showPassword)}>
                             {showPassword ? (
                                 <VisibilityOffIcon />
                             ) : (
@@ -145,7 +149,11 @@ const Login = () => {
                     Login
                 </Button>
                 <div>OR</div>
-                <Button className="login-register" variant="text" size="small" onClick={() => navigate("/register")}>
+                <Button
+                    className="login-register"
+                    variant="text"
+                    size="small"
+                    onClick={() => navigate("/register")}>
                     Create an account
                 </Button>
             </div>

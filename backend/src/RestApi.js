@@ -4,49 +4,72 @@ import bodyParser from "body-parser";
 import { checkUserCredentials, insertUser } from "./Firebase.js";
 import { checkValidTimesheetCredentials } from "./Timesheet.js";
 
-const HTTP_PORT = 3001;
+const REST_PROTOCOL = "http";
+const REST_ADDRESS = "82.76.148.236";
+const REST_PORT = "3001";
+const REST_URL = `${REST_PROTOCOL}://${REST_ADDRESS}:${REST_PORT}`;
+
+const SERVER_STARTED_MESSAGE = `${REST_PROTOCOL.toUpperCase()} server listening on ${REST_URL}`;
+
 const INVALID_CREDENTIALS = "invalid_credentials";
 const INVALID_TIMESHEET_CREDENTIALS = "invalid_timesheet_credentials";
 const USER_EXISTS = "user_exists";
 
-const httpServer = express();
+export const createServer = () => {
+    const httpServer = express();
+    addServerOptions(httpServer);
 
-httpServer.use(cors());
-httpServer.use(bodyParser.json());
+    return httpServer;
+};
 
-httpServer.post("/api/login", async (request, response) => {
-    const username = request.body.username;
-    const password = request.body.password;
+const addServerOptions = (httpServer) => {
+    httpServer.use(cors());
+    httpServer.use(bodyParser.json());
+};
 
-    const isValidLoginInfo = await checkUserCredentials(username, password);
+export const startServer = (httpServer, firebaseDatabase) => {
+    httpServer.post("/api/login", async (request, response) => {
+        const username = request.body.username;
+        const password = request.body.password;
 
-    if (!isValidLoginInfo) {
-        response.send(INVALID_CREDENTIALS);
-    }
+        const isValidLoginInfo = await checkUserCredentials(
+            firebaseDatabase,
+            username,
+            password
+        );
 
-    response.end();
-});
+        if (!isValidLoginInfo) {
+            response.send(INVALID_CREDENTIALS);
+        }
 
-httpServer.post("/api/register", async (request, response) => {
-    const username = request.body.username;
-    const password = request.body.password;
-    const email = request.body.email;
-
-    if (!await checkValidTimesheetCredentials(username, password)) {
-        response.send(INVALID_TIMESHEET_CREDENTIALS);
         response.end();
-        return;
-    }
+    });
 
-    const couldInsertUser = await insertUser(username, password, email);
+    httpServer.post("/api/register", async (request, response) => {
+        const username = request.body.username;
+        const password = request.body.password;
+        const email = request.body.email;
 
-    if (!couldInsertUser) {
-        response.send(USER_EXISTS);
-    }
+        if (!(await checkValidTimesheetCredentials(username, password))) {
+            response.send(INVALID_TIMESHEET_CREDENTIALS);
+            return;
+        }
 
-    response.end();
-});
+        const couldInsertUser = await insertUser(
+            firebaseDatabase,
+            username,
+            password,
+            email
+        );
 
-httpServer.listen(HTTP_PORT, () => {
-    console.log(`HTTP server listening on port ${HTTP_PORT}`);
-});
+        if (!couldInsertUser) {
+            response.send(USER_EXISTS);
+        }
+
+        response.end();
+    });
+
+    httpServer.listen(REST_PORT, () => {
+        console.log(SERVER_STARTED_MESSAGE);
+    });
+};

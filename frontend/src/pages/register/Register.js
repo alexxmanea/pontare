@@ -7,6 +7,11 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -17,6 +22,10 @@ import {
 } from "../../common/RestApi.js";
 import { isValidEmail, isInoviumEmail } from "../../common/Utils.js";
 
+const SUCCESSFULLY_REGISTERED_TITLE = "Register";
+const SUCCESSFULLY_REGISTERED_MESSAGE =
+    "Your account has been successfully created. Proceed to login.";
+
 const Register = () => {
     const navigate = useNavigate();
 
@@ -26,9 +35,7 @@ const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-
-    const handleClickShowPassword = () => setShowPassword(!showPassword);
-    const handleMouseDownPassword = () => setShowPassword(!showPassword);
+    const [showRegisteredDialog, setShowRegisteredDialog] = useState(false);
 
     const handleSubmitRegisterInfo = (event) => {
         event.preventDefault();
@@ -60,7 +67,9 @@ const Register = () => {
                     );
                     return;
                 }
+
                 setErrorMessage(getErrorMessage());
+                setShowRegisteredDialog(true);
             })
             .catch((error) => {
                 showLoadingScreen(false);
@@ -142,8 +151,8 @@ const Register = () => {
                     endAdornment: (
                         <IconButton
                             aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}>
+                            onClick={() => setShowPassword(!showPassword)}
+                            onMouseDown={() => setShowPassword(!showPassword)}>
                             {showPassword ? (
                                 <VisibilityOffIcon />
                             ) : (
@@ -194,6 +203,25 @@ const Register = () => {
                 className="register-loading"
                 style={{ visibility: isLoading ? "visible" : "hidden" }}
             />
+            <Dialog
+                open={showRegisteredDialog}
+                onClose={() => navigate("/login")}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description">
+                <DialogTitle id="alert-dialog-title">
+                    {SUCCESSFULLY_REGISTERED_TITLE}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {SUCCESSFULLY_REGISTERED_MESSAGE}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => navigate("/login")} autoFocus>
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };

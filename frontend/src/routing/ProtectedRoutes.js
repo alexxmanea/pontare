@@ -1,7 +1,8 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { useGlobalState } from "../common/GlobalState";
 
 export default function ProtectedRoutes() {
-    const isAuthenticated = true;
+    const [authenticatedUser] = useGlobalState("authenticatedUser");
 
-    return isAuthenticated ? <Outlet /> : <Navigate to={"/login"} />;
+    return authenticatedUser !== null ? <Outlet /> : <Navigate to={"/login"} />;
 }

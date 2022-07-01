@@ -1,16 +1,17 @@
 import { Navigate } from "react-router-dom";
+import { useGlobalState } from "../common/GlobalState";
 
-function getKnownRoute(isAuthenthicated) {
-    if (!isAuthenthicated) {
+function getKnownRoute(authenticatedUser) {
+    if (authenticatedUser === null) {
         return "/login";
     }
 
-    return "/dashboard";
+    return "/timesheet";
 }
 
 export default function UnknownRoute() {
-    const isAuthenthicated = false;
-    const path = getKnownRoute(isAuthenthicated);
+    const [authenticatedUser] = useGlobalState("authenticatedUser");
+    const path = getKnownRoute(authenticatedUser);
 
     return <Navigate to={path} />;
 }
