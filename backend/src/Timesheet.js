@@ -83,12 +83,6 @@ const navigateToAddPage = async (page) => {
 };
 
 const navigateToTimesheetPage = async (page) => {
-    // screenshot the page
-    await page.screenshot({
-        path: "./screenshot.png",
-        fullPage: true,
-    });
-
     // Navigare catre pagina "Manopera" din meniul principal
     await Promise.all([
         page.waitForNavigation(),
