@@ -27,8 +27,8 @@ const Holidays = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {PUBLIC_HOLIDAYS.map((row) => (
-                            <TableRow>
+                        {PUBLIC_HOLIDAYS.map((row, index) => (
+                            <TableRow key={`holidays-table-row-${index}`}>
                                 <TableCell align="left">{row.date}</TableCell>
                                 <TableCell align="left">
                                     {row.holiday}

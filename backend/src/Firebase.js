@@ -33,6 +33,24 @@ export const checkUserCredentials = async (database, username, password) => {
     return isValidLoginInfo;
 };
 
+export const getUserPassword = async (database, username) => {
+    const snapshot = await database.collection("users").get();
+
+    let decryptedPassword = null;
+
+    snapshot.forEach((entry) => {
+        if (decryptedPassword === null) {
+            const data = entry.data();
+
+            if (username === data.username) {
+                decryptedPassword = decryptPassword(data.password);
+            }
+        }
+    });
+
+    return decryptedPassword;
+};
+
 export const insertUser = async (database, username, password, email) => {
     const userExists = await checkIfUserExists(database, username, email);
 

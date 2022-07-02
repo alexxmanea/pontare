@@ -31,6 +31,8 @@ export const FIELDS = {
 };
 
 export const ETRANS_DATE_FORMAT = "YYYY-MM-DD";
-export const DATE_FORMAT = "DD/MM/YYYY"
+export const DATE_FORMAT = "DD/MM/YYYY";
 
 export const DAY_TYPES = { workday: "Workday", vacation: "Vacation" };
+export const ADD_TO_TIMESHEET_MAX_RETRIES = 3;
+export const ADD_TO_TIMESHEET_DELAY = 1000;

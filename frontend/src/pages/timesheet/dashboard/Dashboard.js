@@ -22,18 +22,21 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import axios from "axios";
 import { REST_URL } from "../../../common/RestApi.js";
+import { useGlobalState } from "../../../common/GlobalState";
+import { isWeekendOrHoliday } from "../../../common/Utils";
+import { DATE_FORMAT } from "../../../common/Constants";
 
 const moment = extendMoment(Moment);
-moment.locale("en", {
+moment.locale("ro", {
     week: {
         dow: 1,
     },
 });
 
 const DAY_TYPES = { workday: "Workday", vacation: "Vacation" };
-const DATE_FORMAT = "DD/MM/YYYY";
 
 const Dashboard = () => {
+    const [authenticatedUser] = useGlobalState("authenticatedUser");
     const [startingWorkday, setStartingWorkday] = useState(null);
     const [endingWorkday, setEndingWorkday] = useState(null);
     const [startingVacation, setStartingVacation] = useState(null);
@@ -80,19 +83,20 @@ const Dashboard = () => {
 
         intervalToAdd.sort((a, b) => a.diff(b));
 
-        let addedIntervalsCopy = [...addedIntervals];
+        const addedIntervalsCopy = addedIntervals.map((element) => ({
+            type: element.type,
+            interval: [...element.interval],
+        }));
 
-        let intervalToAddCopy = intervalToAdd.map((interval) =>
-            interval.clone()
-        );
+        let intervalToAddCopy = [...intervalToAdd];
+
         if (intervalToAddCopy.length === 1) {
             intervalToAddCopy.push(intervalToAddCopy[0]);
         }
+
         let collisions = [];
         addedIntervalsCopy.forEach((element) => {
-            let elementIntervals = element.interval.map((interval) =>
-                interval.clone()
-            );
+            let elementIntervals = [...element.interval];
             if (elementIntervals.length === 1) {
                 elementIntervals.push(elementIntervals[0]);
             }
@@ -145,6 +149,7 @@ const Dashboard = () => {
         let message = [];
         message.push(
             <Typography
+                key={`composeCollisionsDialogMessage-${message.length + 1}`}
                 style={{
                     marginBottom: "1rem",
                 }}>{`The interval you are trying to add (${parseIntervalToString(
@@ -153,7 +158,10 @@ const Dashboard = () => {
         );
         collisions.forEach((collision) => {
             message.push(
-                <Typography>{`- ${parseIntervalToString(collision.interval)} (${
+                <Typography
+                    key={`composeCollisionsDialogMessage-${
+                        message.length + 1
+                    }`}>{`- ${parseIntervalToString(collision.interval)} (${
                     collision.type
                 })`}</Typography>
             );
@@ -164,19 +172,29 @@ const Dashboard = () => {
     const composeSubmitTimesheetDialogMessage = () => {
         let message = [];
         message.push(
-            <Typography>
+            <Typography
+                key={`composeSubmitTimesheetDialogMessage-${
+                    message.length + 1
+                }`}>
                 Are you sure you want to submit the following Timesheet?
             </Typography>
         );
         message.push(
-            <Typography style={{ marginBottom: "1rem" }}>
+            <Typography
+                key={`composeSubmitTimesheetDialogMessage-${
+                    message.length + 1
+                }`}
+                style={{ marginBottom: "1rem" }}>
                 This action is irreversible, so you have to manually remove
                 submitted days from <b>E-Trans</b>.
             </Typography>
         );
         addedIntervals.forEach((row) => {
             message.push(
-                <Typography>{`- ${parseIntervalToString(row.interval)} (${
+                <Typography
+                    key={`composeSubmitTimesheetDialogMessage-${
+                        message.length + 1
+                    }`}>{`- ${parseIntervalToString(row.interval)} (${
                     row.type
                 })`}</Typography>
             );
@@ -191,10 +209,6 @@ const Dashboard = () => {
         return intervalString;
     };
 
-    const disableWeekends = (momentValue) => {
-        return momentValue.isoWeekday() === 6 || momentValue.isoWeekday() === 7;
-    };
-
     const clearDatePickers = () => {
         setStartingWorkday(null);
         setEndingWorkday(null);
@@ -203,9 +217,17 @@ const Dashboard = () => {
     };
 
     const submitTimesheet = () => {
+        const intervalsToSubmit = addedIntervals.map((element) => ({
+            type: element.type,
+            interval: element.interval.map((momentElement) =>
+                momentElement.format(DATE_FORMAT)
+            ),
+        }));
+
         axios
             .post(`${REST_URL}/api/submittimesheet`, {
-                timesheet: addedIntervals,
+                timesheet: intervalsToSubmit,
+                username: authenticatedUser,
             })
             .then((response) => {
                 console.log(response);
@@ -239,12 +261,20 @@ const Dashboard = () => {
     const composeWaitingToSubmitTimesheetDialogMessage = () => {
         let message = [];
         message.push(
-            <Typography style={{ marginBottom: "1rem" }}>
+            <Typography
+                key={`composeWaitingToSubmitTimesheetDialogMessage-${
+                    message.length + 1
+                }`}
+                style={{ marginBottom: "1rem" }}>
                 Your Timesheet is submitting. Please wait...
             </Typography>
         );
         message.push(
-            <div className="dashboard-submit-loading">
+            <div
+                className="dashboard-submit-loading"
+                key={`composeWaitingToSubmitTimesheetDialogMessage-${
+                    message.length + 1
+                }`}>
                 <CircularProgress />
             </div>
         );
@@ -261,9 +291,6 @@ const Dashboard = () => {
         return message;
     };
 
-    const a = waitingToSubmitTimesheetDialogMessage[0]?.props?.children;
-    let b = "";
-
     return (
         <div className="dashboard-container">
             <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -279,7 +306,7 @@ const Dashboard = () => {
                             inputFormat={DATE_FORMAT}
                             mask="__/__/____"
                             disableFuture
-                            shouldDisableDate={disableWeekends}
+                            shouldDisableDate={isWeekendOrHoliday}
                             renderInput={(params) => (
                                 <TextField fullWidth {...params} />
                             )}
@@ -293,7 +320,7 @@ const Dashboard = () => {
                             inputFormat={DATE_FORMAT}
                             mask="__/__/____"
                             disableFuture
-                            shouldDisableDate={disableWeekends}
+                            shouldDisableDate={isWeekendOrHoliday}
                             renderInput={(params) => (
                                 <TextField fullWidth {...params} />
                             )}
@@ -302,7 +329,12 @@ const Dashboard = () => {
                             className="dashboard-workdays-item dashboard-workdays-add"
                             variant="contained"
                             disabled={
-                                !isValidInterval(startingWorkday, endingWorkday)
+                                !isValidInterval(
+                                    startingWorkday,
+                                    endingWorkday
+                                ) ||
+                                isWeekendOrHoliday(startingWorkday) ||
+                                isWeekendOrHoliday(endingWorkday)
                             }
                             onClick={() =>
                                 addInterval(
@@ -327,7 +359,7 @@ const Dashboard = () => {
                             onChange={setStartingVacation}
                             inputFormat={DATE_FORMAT}
                             mask="__/__/____"
-                            shouldDisableDate={disableWeekends}
+                            shouldDisableDate={isWeekendOrHoliday}
                             renderInput={(params) => (
                                 <TextField fullWidth {...params} />
                             )}
@@ -340,7 +372,7 @@ const Dashboard = () => {
                             onChange={setEndingVacation}
                             inputFormat={DATE_FORMAT}
                             mask="__/__/____"
-                            shouldDisableDate={disableWeekends}
+                            shouldDisableDate={isWeekendOrHoliday}
                             renderInput={(params) => (
                                 <TextField fullWidth {...params} />
                             )}
@@ -352,7 +384,9 @@ const Dashboard = () => {
                                 !isValidInterval(
                                     startingVacation,
                                     endingVacation
-                                )
+                                ) ||
+                                isWeekendOrHoliday(startingVacation) ||
+                                isWeekendOrHoliday(endingVacation)
                             }
                             onClick={() =>
                                 addInterval(
@@ -388,7 +422,8 @@ const Dashboard = () => {
                     </TableHead>
                     <TableBody>
                         {addedIntervals?.map((row, index) => (
-                            <TableRow>
+                            <TableRow
+                                key={`dashboard-timesheet-table-row-${index}`}>
                                 <TableCell align="left">
                                     <Tooltip
                                         title="Delete interval"
@@ -421,10 +456,7 @@ const Dashboard = () => {
                 }}>
                 Submit timesheet
             </Button>
-            <Dialog
-                open={collisionsDialogMessage.length}
-                disableBackdropClick
-                disableEscapeKeyDown>
+            <Dialog open={collisionsDialogMessage.length > 0}>
                 <DialogTitle>Intervals collide</DialogTitle>
                 <DialogContent>{collisionsDialogMessage}</DialogContent>
                 <DialogActions>
@@ -435,10 +467,7 @@ const Dashboard = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Dialog
-                open={submitTimesheetDialogMessage.length}
-                disableBackdropClick
-                disableEscapeKeyDown>
+            <Dialog open={submitTimesheetDialogMessage.length > 0}>
                 <DialogTitle>Submit Timesheet</DialogTitle>
                 <DialogContent>{submitTimesheetDialogMessage}</DialogContent>
                 <DialogActions>
@@ -450,10 +479,7 @@ const Dashboard = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Dialog
-                open={waitingToSubmitTimesheetDialogMessage.length}
-                disableBackdropClick
-                disableEscapeKeyDown>
+            <Dialog open={waitingToSubmitTimesheetDialogMessage.length > 0}>
                 <DialogTitle>Submit Timesheet</DialogTitle>
                 <DialogContent>
                     {waitingToSubmitTimesheetDialogMessage}

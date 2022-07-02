@@ -194,9 +194,7 @@ const Register = () => {
                 style={{ visibility: isLoading ? "visible" : "hidden" }}
             />
             <Dialog
-                open={showRegisteredDialog}
-                disableBackdropClick
-                disableEscapeKeyDown>
+                open={showRegisteredDialog}>
                 <DialogTitle>{SUCCESSFULLY_REGISTERED_TITLE}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>

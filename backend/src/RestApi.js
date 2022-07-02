@@ -1,8 +1,21 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import { checkUserCredentials, insertUser } from "./Firebase.js";
-import { checkValidTimesheetCredentials } from "./Timesheet.js";
+import {
+    checkUserCredentials,
+    getUserPassword,
+    insertUser,
+} from "./Firebase.js";
+import {
+    addToTimesheet,
+    checkValidTimesheetCredentials,
+    closeBrowser,
+    startPageAndLogin,
+    getRemoteTimesheetPageContent,
+} from "./Timesheet.js";
+import { DATE_FORMAT, ADD_TO_TIMESHEET_DELAY } from "./Constants.js";
+import { delay } from "./Utils.js";
+import moment from "moment";
 
 const REST_PROTOCOL = "http";
 const REST_ADDRESS = "82.76.148.236";
@@ -70,6 +83,52 @@ export const startServer = (httpServer, firebaseDatabase) => {
     });
 
     httpServer.post("/api/submittimesheet", async (request, response) => {
+        const timesheet = request?.body?.timesheet;
+        const username = request?.body?.username;
+
+        if (!timesheet || !timesheet.length) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        const password = await getUserPassword(firebaseDatabase, username);
+
+        const { page, browser, retCode } = await startPageAndLogin(
+            username,
+            password
+        );
+
+        if (!retCode) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        const remoteTimesheetPageContent = await getRemoteTimesheetPageContent(page);
+
+        for (let i = 0; i < timesheet.length; i++) {
+            const entry = timesheet[i];
+            let interval = [...entry.interval];
+            if (interval.length === 1) {
+                interval.push(interval[0]);
+            }
+
+            const startingDay = moment(interval[0], DATE_FORMAT);
+            const endingDay = moment(interval[1], DATE_FORMAT);
+
+            let currentMoment = moment(startingDay);
+            while (currentMoment.diff(endingDay, "days") <= 0) {
+                await addToTimesheet(
+                    page,
+                    remoteTimesheetPageContent,
+                    currentMoment,
+                    interval.type
+                );
+                await delay(ADD_TO_TIMESHEET_DELAY);
+                currentMoment.add(1, "days");
+            }
+        }
+
+        await closeBrowser(browser);
         response.end();
     });
 

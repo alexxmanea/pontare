@@ -1,3 +1,6 @@
+import PUBLIC_HOLIDAYS from "../assets/public_holidays.json";
+import { DATE_FORMAT } from "./Constants.js";
+
 const VALID_EMAIL_REGEX =
     /^[-!#$%&'*+/0-9=?A-Z^_a-z`{|}~](.?[-!#$%&'*+/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*.?[a-zA-Z0-9])*.[a-zA-Z](-?[a-zA-Z0-9])+$/;
 
@@ -45,4 +48,32 @@ export const showLoadingScreen = (setSpinnerIsLoading, value) => {
         let body = document.getElementsByTagName("body")[0];
         body.style.removeProperty("pointer-events");
     }
+};
+
+export const isWeekend = (momentValue) => {
+    if (!momentValue?.isValid()) {
+        return false;
+    }
+    return momentValue.isoWeekday() === 6 || momentValue.isoWeekday() === 7;
+};
+
+export const isHoliday = (momentValue) => {
+    if (!momentValue?.isValid()) {
+        return false;
+    }
+
+    let isHoliday = false;
+
+    PUBLIC_HOLIDAYS.forEach((holiday) => {
+        if (momentValue.format(DATE_FORMAT) === holiday.date) {
+            isHoliday = true;
+            return;
+        }
+    });
+
+    return isHoliday;
+};
+
+export const isWeekendOrHoliday = (momentValue) => {
+    return isWeekend(momentValue) || isHoliday(momentValue);
 };

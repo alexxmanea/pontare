@@ -1,11 +1,13 @@
 import puppeteer from "puppeteer";
-import moment from "moment";
+
 import {
     LOGIN_URL,
     FIELDS,
     ETRANS_DATE_FORMAT,
     DAY_TYPES,
 } from "./Constants.js";
+
+import { isWeekendOrHoliday } from "./Utils.js";
 
 const textFieldClearAndType = async (page, element, value) => {
     // Selectare text-field, golire (triplu click pentru a selecta textul existent) si introducere valoare
@@ -80,24 +82,76 @@ const navigateToAddPage = async (page) => {
     ]);
 };
 
-const startJob = async (username, password) => {
+const navigateToTimesheetPage = async (page) => {
+    // screenshot the page
+    await page.screenshot({
+        path: "./screenshot.png",
+        fullPage: true,
+    });
+
+    // Navigare catre pagina "Manopera" din meniul principal
+    await Promise.all([
+        page.waitForNavigation(),
+        page.click(FIELDS.manopera.main),
+    ]);
+};
+
+const dateIsAlreadyInTimesheet = async (
+    remoteTimesheetPageContent,
+    momentDate
+) => {
+    if (
+        remoteTimesheetPageContent.includes(
+            momentDate.format(ETRANS_DATE_FORMAT)
+        )
+    ) {
+        return true;
+    }
+
+    return false;
+};
+
+export const getRemoteTimesheetPageContent = async (page) => {
+    await navigateToTimesheetPage(page);
+
+    const pageContent = await page.content();
+
+    return pageContent;
+};
+
+export const startPageAndLogin = async (username, password) => {
     const { page, browser } = await launchBrowserOnMainPage();
 
     if ((await login(page, username, password)) === false) {
         await browser.close();
-        return;
+        return { retCode: false };
+    }
+
+    return { retCode: true, page: page, browser: browser };
+};
+
+export const closeBrowser = async (browser) => {
+    await browser.close();
+};
+
+export const addToTimesheet = async (
+    page,
+    remoteTimesheetPageContent,
+    momentDate,
+    dayType = DAY_TYPES.workday
+) => {
+    if (
+        await dateIsAlreadyInTimesheet(remoteTimesheetPageContent, momentDate)
+    ) {
+        return false;
+    }
+
+    if (isWeekendOrHoliday(momentDate)) {
+        return false;
     }
 
     await navigateToAddPage(page);
 
-    const currentDate = moment().format(ETRANS_DATE_FORMAT);
-    await addRecord(page, currentDate, DAY_TYPES.vacation);
-
-    await page.screenshot({ path: "example.png", fullPage: true });
-    await browser.close();
-};
-
-const addRecord = async (page, date, dayType = DAY_TYPES.workday) => {
     const project = {
         select: FIELDS.manopera.project.work.select,
         option: FIELDS.manopera.project.work.option,
@@ -126,7 +180,7 @@ const addRecord = async (page, date, dayType = DAY_TYPES.workday) => {
         (element, value) => {
             element.value = value;
         },
-        date
+        momentDate.format(ETRANS_DATE_FORMAT)
     );
 
     // Modificare "Numar ore"

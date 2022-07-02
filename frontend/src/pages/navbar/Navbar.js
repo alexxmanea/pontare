@@ -40,9 +40,7 @@ const Navbar = () => {
                 Logout
             </Button>
             <Dialog
-                open={showLogoutDialog}
-                disableBackdropClick
-                disableEscapeKeyDown>
+                open={showLogoutDialog}>
                 <DialogTitle>{LOGOUT_TITLE}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>{LOGOUT_MESSAGE}</DialogContentText>
