@@ -134,7 +134,7 @@ const Login = () => {
             <div className="login-submit-container">
                 <Button
                     className="login-submit"
-                    variant="outlined"
+                    variant="contained"
                     onClick={handleSubmitLoginInfo}>
                     Login
                 </Button>
@@ -142,7 +142,6 @@ const Login = () => {
                 <Button
                     className="login-register"
                     variant="text"
-                    size="small"
                     onClick={() => navigate("/register")}>
                     Create an account
                 </Button>

@@ -1,0 +1,14 @@
+.stats-container {
+    width: 100%;
+    flex-grow: 1;
+    border-radius: 0.3rem;
+    background-color: var(--color-foreground);
+    box-sizing: border-box;
+    box-shadow: var(--default-box-shadow);
+    padding: 1.5rem;
+}
+
+.stats-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}

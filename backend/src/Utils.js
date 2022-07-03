@@ -32,3 +32,18 @@ export const isHoliday = (momentValue) => {
 export const isWeekendOrHoliday = (momentValue) => {
     return isWeekend(momentValue) || isHoliday(momentValue);
 };
+
+export const getTimesheetEntry = (interval, dayType, daysUsed) => {
+    const startingDay = moment(interval[0], DATE_FORMAT);
+    let endingDay = null;
+    if (interval.length === 2) {
+        endingDay = moment(interval[1], DATE_FORMAT);
+    }
+
+    return {
+        startingDay: startingDay,
+        endingDay: endingDay,
+        type: dayType,
+        daysUsed: daysUsed,
+    };
+};

@@ -2,6 +2,16 @@ import { initializeApp, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import SERVICE_ACCOUNT from "../secure/firebase_service_account.json" assert { type: "json" };
 import { encryptPassword, decryptPassword } from "./PasswordEncryption.js";
+import {
+    DEFAULT_VACATION_DAYS,
+    DEFAULT_WORKDAYS_ADDED,
+    DEFAULT_VACATION_DAYS_ADDED,
+    DEFAULT_SLACK_SUBSCRIPTION,
+    DEFAULT_SLACK_MEMBER_ID,
+    DEFAULT_EMAIL_SUBSCRIPTION,
+    DEFAULT_DAILY_TIMESHEET_SUBSCRIPTION,
+    DEFAULT_TIMESHEET_HISTORY,
+} from "./Constants.js";
 
 const FIREBASE_DATABASE_URL =
     "https://pontare-ce116-default-rtdb.europe-west1.firebasedatabase.app";
@@ -33,22 +43,24 @@ export const checkUserCredentials = async (database, username, password) => {
     return isValidLoginInfo;
 };
 
-export const getUserPassword = async (database, username) => {
+export const getUserByUsername = async (database, username) => {
     const snapshot = await database.collection("users").get();
 
-    let decryptedPassword = null;
+    let data = null;
+    let id = null;
 
     snapshot.forEach((entry) => {
-        if (decryptedPassword === null) {
-            const data = entry.data();
-
-            if (username === data.username) {
-                decryptedPassword = decryptPassword(data.password);
+        const entryData = entry.data();
+        if (data === null && id === null) {
+            if (username === entryData.username) {
+                data = entryData;
+                id = entry.id;
             }
         }
     });
 
-    return decryptedPassword;
+    data.password = decryptPassword(data.password);
+    return { id: id, data: data };
 };
 
 export const insertUser = async (database, username, password, email) => {
@@ -62,6 +74,14 @@ export const insertUser = async (database, username, password, email) => {
         username: username,
         password: encryptPassword(password),
         email: email,
+        vacationDaysRemaining: DEFAULT_VACATION_DAYS,
+        workDaysAdded: DEFAULT_WORKDAYS_ADDED,
+        vacationDaysAdded: DEFAULT_VACATION_DAYS_ADDED,
+        slackSubscription: DEFAULT_SLACK_SUBSCRIPTION,
+        slackMemberId: DEFAULT_SLACK_MEMBER_ID,
+        emailSubscription: DEFAULT_EMAIL_SUBSCRIPTION,
+        automaticTimesheetSubscription: DEFAULT_DAILY_TIMESHEET_SUBSCRIPTION,
+        timesheetHistory: DEFAULT_TIMESHEET_HISTORY,
     });
 
     return true;
@@ -81,4 +101,8 @@ const checkIfUserExists = async (database, username, email) => {
     });
 
     return userExists;
+};
+
+export const updateUser = async (database, id, data) => {
+    await database.collection("users").doc(id).update(data);
 };

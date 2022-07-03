@@ -176,7 +176,7 @@ const Register = () => {
             <div className="register-submit-container">
                 <Button
                     className="register-submit"
-                    variant="outlined"
+                    variant="contained"
                     onClick={handleSubmitRegisterInfo}>
                     Register
                 </Button>
@@ -184,7 +184,6 @@ const Register = () => {
                 <Button
                     className="register-login"
                     variant="text"
-                    size="small"
                     onClick={() => navigate("/login")}>
                     Login with an existing account
                 </Button>

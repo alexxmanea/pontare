@@ -137,7 +137,7 @@ export const addToTimesheet = async (
     if (
         await dateIsAlreadyInTimesheet(remoteTimesheetPageContent, momentDate)
     ) {
-        return false;
+        return true;
     }
 
     if (isWeekendOrHoliday(momentDate)) {
@@ -195,4 +195,6 @@ export const addToTimesheet = async (
         page.waitForNavigation(),
         page.click(FIELDS.manopera.submit),
     ]);
+
+    return true;
 };

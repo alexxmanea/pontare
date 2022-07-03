@@ -31,16 +31,14 @@ const Navbar = () => {
                 <Button onClick={() => navigate("/timesheet")}>
                     Timesheet
                 </Button>
-                <Button onClick={() => navigate("/stats")}>Stats</Button>
-                <Button onClick={() => navigate("/settings")}>Settings</Button>
+                <Button onClick={() => navigate("/stats-settings")}>{"Stats & Settings"}</Button>
             </div>
             <Button
                 className="navbar-logout"
                 onClick={() => setShowLogoutDialog(true)}>
                 Logout
             </Button>
-            <Dialog
-                open={showLogoutDialog}>
+            <Dialog open={showLogoutDialog}>
                 <DialogTitle>{LOGOUT_TITLE}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>{LOGOUT_MESSAGE}</DialogContentText>

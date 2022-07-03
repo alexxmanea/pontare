@@ -36,7 +36,6 @@
 
 .dashboard-workdays-item {
     height: 100%;
-    box-sizing: border-box !important;
     flex-basis: 100%;
 }
 
