@@ -1,0 +1,26 @@
+.automaticTimesheet-container {
+    border-radius: 0.3rem;
+    background-color: var(--color-foreground);
+    box-sizing: border-box;
+    box-shadow: var(--default-box-shadow);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    justify-content: space-between;
+}
+
+.automaticTimesheet-container {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+.automaticTimesheet-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.automaticTimesheet-button {
+    height: 3rem;
+    text-transform: none !important;
+    font-weight: bold !important;
+}

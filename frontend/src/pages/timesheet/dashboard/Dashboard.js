@@ -36,7 +36,7 @@ moment.locale("ro", {
 const DAY_TYPES = { workday: "Workday", vacation: "Vacation" };
 
 const Dashboard = () => {
-    const [authenticatedUser] = useGlobalState("authenticatedUser");
+    const [userId] = useGlobalState("userId");
     const [startingWorkday, setStartingWorkday] = useState(null);
     const [endingWorkday, setEndingWorkday] = useState(null);
     const [startingVacation, setStartingVacation] = useState(null);
@@ -227,7 +227,7 @@ const Dashboard = () => {
         axios
             .post(`${REST_URL}/api/submittimesheet`, {
                 timesheet: intervalsToSubmit,
-                username: authenticatedUser,
+                userId: userId,
             })
             .then((response) => {
                 console.log(response);

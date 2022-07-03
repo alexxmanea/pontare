@@ -3,9 +3,14 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import {
     checkUserCredentials,
-    getUserByUsername,
+    getUserData,
     insertUser,
     updateUser,
+    toggleAutomaticTimesheet,
+    toggleEmailSubscription,
+    toggleSlackSubscription,
+    changeEmail,
+    changeSlackMemberId,
 } from "./Firebase.js";
 import {
     addToTimesheet,
@@ -51,17 +56,17 @@ export const startServer = (httpServer, firebaseDatabase) => {
         const username = request.body.username;
         const password = request.body.password;
 
-        const isValidLoginInfo = await checkUserCredentials(
+        const userId = await checkUserCredentials(
             firebaseDatabase,
             username,
             password
         );
 
-        if (!isValidLoginInfo) {
+        if (userId === null) {
             response.send(INVALID_CREDENTIALS);
         }
 
-        response.end();
+        response.send(userId);
     });
 
     httpServer.post("/api/register", async (request, response) => {
@@ -90,20 +95,17 @@ export const startServer = (httpServer, firebaseDatabase) => {
 
     httpServer.post("/api/submittimesheet", async (request, response) => {
         const timesheet = request?.body?.timesheet;
-        const username = request?.body?.username;
+        const userId = request?.body?.userId;
 
         if (!timesheet || !timesheet?.length) {
             response.send(SERVER_ERROR);
             return;
         }
 
-        const { id, data } = await getUserByUsername(
-            firebaseDatabase,
-            username
-        );
+        const data = await getUserData(firebaseDatabase, userId);
 
         const { page, browser, retCode } = await startPageAndLogin(
-            username,
+            data.username,
             data.password
         );
 
@@ -179,21 +181,21 @@ export const startServer = (httpServer, firebaseDatabase) => {
 
         delete data.password;
 
-        await updateUser(firebaseDatabase, id, data);
+        await updateUser(firebaseDatabase, userId, data);
 
         await closeBrowser(browser);
         response.end();
     });
 
     httpServer.get("/api/settings", async (request, response) => {
-        const username = request?.query?.username;
+        const userId = request?.query?.userId;
 
-        if (!username || !username?.length) {
+        if (!userId || !userId?.length) {
             response.send(SERVER_ERROR);
             return;
         }
 
-        const { data } = await getUserByUsername(firebaseDatabase, username);
+        const data = await getUserData(firebaseDatabase, userId);
 
         const responseBody = {
             automaticTimesheetSubscription: data.automaticTimesheetSubscription,
@@ -204,6 +206,92 @@ export const startServer = (httpServer, firebaseDatabase) => {
         };
 
         response.send(responseBody);
+        response.end();
+    });
+
+    httpServer.post("/api/automatictimesheet", async (request, response) => {
+        const userId = request?.body?.userId;
+        const automaticTimesheetSubscription =
+            request?.body?.automaticTimesheetSubscription;
+
+        if (
+            userId === undefined ||
+            automaticTimesheetSubscription === undefined
+        ) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        await toggleAutomaticTimesheet(
+            firebaseDatabase,
+            userId,
+            automaticTimesheetSubscription
+        );
+
+        response.end();
+    });
+
+    httpServer.post("/api/emailsubscription", async (request, response) => {
+        const userId = request?.body?.userId;
+        const emailSubscription = request?.body?.emailSubscription;
+
+        if (userId === undefined || emailSubscription === undefined) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        await toggleEmailSubscription(
+            firebaseDatabase,
+            userId,
+            emailSubscription
+        );
+
+        response.end();
+    });
+
+    httpServer.post("/api/slacksubscription", async (request, response) => {
+        const userId = request?.body?.userId;
+        const slackSubscription = request?.body?.slackSubscription;
+
+        if (userId === undefined || slackSubscription === undefined) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        await toggleSlackSubscription(
+            firebaseDatabase,
+            userId,
+            slackSubscription
+        );
+
+        response.end();
+    });
+
+    httpServer.post("/api/changeemail", async (request, response) => {
+        const userId = request?.body?.userId;
+        const email = request?.body?.email;
+
+        if (userId === undefined || email === undefined) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        await changeEmail(firebaseDatabase, userId, email);
+
+        response.end();
+    });
+
+    httpServer.post("/api/changeslackmemberid", async (request, response) => {
+        const userId = request?.body?.userId;
+        const slackMemberId = request?.body?.slackMemberId;
+
+        if (userId === undefined || slackMemberId === undefined) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        await changeSlackMemberId(firebaseDatabase, userId, slackMemberId);
+
         response.end();
     });
 

@@ -28,15 +28,17 @@ export const initializeFirebaseApp = () => {
 export const checkUserCredentials = async (database, username, password) => {
     const snapshot = await database.collection("users").get();
 
-    let isValidLoginInfo = false;
+    let isValidLoginInfo = null;
 
     snapshot.forEach((entry) => {
-        const data = entry.data();
+        if (isValidLoginInfo === null) {
+            const data = entry.data();
 
-        let decryptedPassword = decryptPassword(data.password);
+            let decryptedPassword = decryptPassword(data.password);
 
-        if (username === data.username && password === decryptedPassword) {
-            isValidLoginInfo = true;
+            if (username === data.username && password === decryptedPassword) {
+                isValidLoginInfo = entry.id;
+            }
         }
     });
 
@@ -61,6 +63,13 @@ export const getUserByUsername = async (database, username) => {
 
     data.password = decryptPassword(data.password);
     return { id: id, data: data };
+};
+
+export const getUserData = async (database, userId) => {
+    const snapshot = await database.collection("users").doc(userId).get();
+    const data = snapshot.data();
+
+    return data;
 };
 
 export const insertUser = async (database, username, password, email) => {
@@ -105,4 +114,34 @@ const checkIfUserExists = async (database, username, email) => {
 
 export const updateUser = async (database, id, data) => {
     await database.collection("users").doc(id).update(data);
+};
+
+export const toggleAutomaticTimesheet = async (database, userId, value) => {
+    await updateUser(database, userId, {
+        automaticTimesheetSubscription: value,
+    });
+};
+
+export const toggleEmailSubscription = async (database, userId, value) => {
+    await updateUser(database, userId, {
+        emailSubscription: value,
+    });
+};
+
+export const toggleSlackSubscription = async (database, userId, value) => {
+    await updateUser(database, userId, {
+        slackSubscription: value,
+    });
+};
+
+export const changeEmail = async (database, userId, email) => {
+    await updateUser(database, userId, {
+        email: email,
+    });
+};
+
+export const changeSlackMemberId = async (database, userId, slackMemberId) => {
+    await updateUser(database, userId, {
+        slackMemberId: slackMemberId,
+    });
 };

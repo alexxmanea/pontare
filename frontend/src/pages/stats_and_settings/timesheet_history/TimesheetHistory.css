@@ -1,9 +1,4 @@
-.stats-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.stats-container {
+.timeSheetHistory-container {
     border-radius: 0.3rem;
     background-color: var(--color-foreground);
     box-sizing: border-box;
@@ -11,6 +6,11 @@
     padding: 1.5rem;
 }
 
-.stats-container {
-    grid-area: 2 / 3 / 4 / 4;
+.timeSheetHistory-container {
+    grid-area: 2 / 1 / 4 / 3;
+}
+
+.timeSheetHistory-title {
+    font-size: 1.5rem;
+    font-weight: bold;
 }

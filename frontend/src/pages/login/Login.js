@@ -51,7 +51,7 @@ const Login = () => {
                 }
                 setErrorMessage(getErrorMessage());
 
-                performLogin();
+                performLogin(response.data);
             })
             .catch((error) => {
                 showLoadingScreen(setIsLoading, false);
@@ -79,8 +79,9 @@ const Login = () => {
         return "";
     };
 
-    const performLogin = () => {
+    const performLogin = (userId) => {
         setGlobalState("authenticatedUser", username);
+        setGlobalState("userId", userId);
         navigate("/timesheet");
     };
 
