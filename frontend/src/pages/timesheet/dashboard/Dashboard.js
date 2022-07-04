@@ -24,7 +24,7 @@ import axios from "axios";
 import { REST_URL } from "../../../common/RestApi.js";
 import { useGlobalState } from "../../../common/GlobalState";
 import { isWeekendOrHoliday } from "../../../common/Utils";
-import { DATE_FORMAT } from "../../../common/Constants";
+import { DATE_FORMAT, DAY_TYPES } from "../../../common/Constants";
 
 const moment = extendMoment(Moment);
 moment.locale("ro", {
@@ -32,8 +32,6 @@ moment.locale("ro", {
         dow: 1,
     },
 });
-
-const DAY_TYPES = { workday: "Workday", vacation: "Vacation" };
 
 const Dashboard = () => {
     const [userId] = useGlobalState("userId");
@@ -234,6 +232,8 @@ const Dashboard = () => {
                 setWaitingToSubmitTimesheetDialogMessage(
                     composeTimesheetSubmittedDialogMessage(true)
                 );
+                clearDatePickers();
+                clearIntervals();
                 // if (response.data === USER_EXISTS) {
                 //     setErrorMessage(getErrorMessage(USER_EXISTS));
                 //     return;
@@ -253,8 +253,6 @@ const Dashboard = () => {
         setWaitingToSubmitTimesheetDialogMessage(
             composeWaitingToSubmitTimesheetDialogMessage()
         );
-        // clearDatePickers();
-        // clearIntervals();
         setSubmitTimesheetDialogMessage([]);
     };
 
@@ -416,8 +414,16 @@ const Dashboard = () => {
                                     </IconButton>
                                 </Tooltip>
                             </TableCell>
-                            <TableCell align="left">Date</TableCell>
-                            <TableCell align="left">Type</TableCell>
+                            <TableCell
+                                className="dashboard-table-header-cell"
+                                align="left">
+                                Date
+                            </TableCell>
+                            <TableCell
+                                className="dashboard-table-header-cell"
+                                align="left">
+                                Type
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

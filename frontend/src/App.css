@@ -10,7 +10,7 @@ body {
     padding: 0;
     box-sizing: border-box;
 
-    color: var(--color-text);
+    /* color: var(--color-text); */
     background-color: var(--color-background);
 
     font-family: "Roboto";

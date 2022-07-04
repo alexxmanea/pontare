@@ -1,5 +1,5 @@
 const REST_PROTOCOL = "http";
-const REST_ADDRESS = "82.76.148.236";
+const REST_ADDRESS = window.location.href.split("/")[2].split(":")[0];
 const REST_PORT = "3001";
 export const REST_URL = `${REST_PROTOCOL}://${REST_ADDRESS}:${REST_PORT}`;
 

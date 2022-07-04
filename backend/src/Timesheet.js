@@ -1,12 +1,11 @@
 import puppeteer from "puppeteer";
-
 import {
     LOGIN_URL,
     FIELDS,
     ETRANS_DATE_FORMAT,
     DAY_TYPES,
 } from "./Constants.js";
-
+import { decryptPassword } from "./PasswordEncryption.js";
 import { isWeekendOrHoliday } from "./Utils.js";
 
 const textFieldClearAndType = async (page, element, value) => {
@@ -116,7 +115,9 @@ export const getRemoteTimesheetPageContent = async (page) => {
 export const startPageAndLogin = async (username, password) => {
     const { page, browser } = await launchBrowserOnMainPage();
 
-    if ((await login(page, username, password)) === false) {
+    const decryptedPassword = decryptPassword(password);
+
+    if ((await login(page, username, decryptedPassword)) === false) {
         await browser.close();
         return { retCode: false };
     }

@@ -22,7 +22,7 @@ const EmailNotifications = () => {
 
     useEffect(() => {
         axios
-            .get(`${REST_URL}/api/settings`, {
+            .get(`${REST_URL}/api/emailnotifications`, {
                 params: {
                     userId: userId,
                 },

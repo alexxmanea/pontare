@@ -17,7 +17,7 @@ const AutomaticTimesheet = () => {
 
     useEffect(() => {
         axios
-            .get(`${REST_URL}/api/settings`, {
+            .get(`${REST_URL}/api/automatictimesheet`, {
                 params: {
                     userId: userId,
                 },

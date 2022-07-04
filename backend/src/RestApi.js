@@ -11,6 +11,7 @@ import {
     toggleSlackSubscription,
     changeEmail,
     changeSlackMemberId,
+    changeDefaultVacationDays,
 } from "./Firebase.js";
 import {
     addToTimesheet,
@@ -25,8 +26,11 @@ import {
     DAY_TYPES,
     SERVER_ERROR,
 } from "./Constants.js";
-import { delay } from "./Utils.js";
+import { composeEmailManualTimesheetMessage, delay } from "./Utils.js";
 import moment from "moment";
+import { composeSlackManualTimesheetMessage } from "./Utils.js";
+import { sendSlackNotification } from "./notifications/SlackNotifications.js";
+import { sendEmailNotification } from "./notifications/EmailNotifications.js";
 
 const REST_PROTOCOL = "http";
 const REST_ADDRESS = "82.76.148.236";
@@ -64,6 +68,7 @@ export const startServer = (httpServer, firebaseDatabase) => {
 
         if (userId === null) {
             response.send(INVALID_CREDENTIALS);
+            return;
         }
 
         response.send(userId);
@@ -88,6 +93,7 @@ export const startServer = (httpServer, firebaseDatabase) => {
 
         if (!couldInsertUser) {
             response.send(USER_EXISTS);
+            return;
         }
 
         response.end();
@@ -177,17 +183,30 @@ export const startServer = (httpServer, firebaseDatabase) => {
         data.vacationDaysAdded += vacationDaysAdded;
         data.workDaysAdded += workDaysAdded;
         data.timesheetHistory = [...data.timesheetHistory, ...timesheetHistory];
-        data.vacationDaysRemaining -= vacationDaysAdded;
 
         delete data.password;
 
         await updateUser(firebaseDatabase, userId, data);
 
         await closeBrowser(browser);
+
+        sendEmailNotification(
+            data,
+            composeEmailManualTimesheetMessage(timesheetHistory)
+        );
+
+        sendSlackNotification(
+            data,
+            composeSlackManualTimesheetMessage(
+                timesheetHistory,
+                data.slackMemberId
+            )
+        );
+        
         response.end();
     });
 
-    httpServer.get("/api/settings", async (request, response) => {
+    httpServer.get("/api/automatictimesheet", async (request, response) => {
         const userId = request?.query?.userId;
 
         if (!userId || !userId?.length) {
@@ -199,8 +218,42 @@ export const startServer = (httpServer, firebaseDatabase) => {
 
         const responseBody = {
             automaticTimesheetSubscription: data.automaticTimesheetSubscription,
+        };
+
+        response.send(responseBody);
+        response.end();
+    });
+
+    httpServer.get("/api/emailnotifications", async (request, response) => {
+        const userId = request?.query?.userId;
+
+        if (!userId || !userId?.length) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        const data = await getUserData(firebaseDatabase, userId);
+
+        const responseBody = {
             email: data.email,
             emailSubscription: data.emailSubscription,
+        };
+
+        response.send(responseBody);
+        response.end();
+    });
+
+    httpServer.get("/api/slacknotifications", async (request, response) => {
+        const userId = request?.query?.userId;
+
+        if (!userId || !userId?.length) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        const data = await getUserData(firebaseDatabase, userId);
+
+        const responseBody = {
             slackMemberId: data.slackMemberId,
             slackSubscription: data.slackSubscription,
         };
@@ -294,6 +347,65 @@ export const startServer = (httpServer, firebaseDatabase) => {
 
         response.end();
     });
+
+    httpServer.get("/api/timesheethistory", async (request, response) => {
+        const userId = request?.query?.userId;
+
+        if (!userId || !userId?.length) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        const data = await getUserData(firebaseDatabase, userId);
+
+        const responseBody = {
+            timesheetHistory: data.timesheetHistory,
+        };
+
+        response.send(responseBody);
+        response.end();
+    });
+
+    httpServer.get("/api/stats", async (request, response) => {
+        const userId = request?.query?.userId;
+
+        if (!userId || !userId?.length) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        const data = await getUserData(firebaseDatabase, userId);
+
+        const responseBody = {
+            workDaysAdded: data.workDaysAdded,
+            vacationDaysAdded: data.vacationDaysAdded,
+            defaultVacationDays: data.defaultVacationDays,
+        };
+
+        response.send(responseBody);
+        response.end();
+    });
+
+    httpServer.post(
+        "/api/changedefaultvacationdays",
+        async (request, response) => {
+            const userId = request?.body?.userId;
+            const defaultVacationDays = request?.body?.defaultVacationDays;
+
+            if (userId === undefined || defaultVacationDays === undefined) {
+                response.send(SERVER_ERROR);
+                return;
+            }
+
+            await changeDefaultVacationDays(
+                firebaseDatabase,
+                userId,
+                defaultVacationDays
+            );
+
+            response.end();
+        }
+    );
 
     httpServer.listen(REST_PORT, () => {
         console.log(SERVER_STARTED_MESSAGE);

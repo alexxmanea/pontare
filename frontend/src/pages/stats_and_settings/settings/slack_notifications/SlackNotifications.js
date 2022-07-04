@@ -1,6 +1,7 @@
 import "./SlackNotifications.css";
 import { useState, useEffect } from "react";
 import { useGlobalState } from "../../../../common/GlobalState";
+import { SLACK_MEMBER_ID_TUTORIAL } from "../../../../common/Constants";
 import { REST_URL, SERVER_ERROR } from "../../../../common/RestApi";
 import axios from "axios";
 import { TextField, Button } from "@mui/material";
@@ -11,6 +12,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const SlackNotifications = () => {
     const [userId] = useGlobalState("userId");
@@ -21,7 +23,7 @@ const SlackNotifications = () => {
 
     useEffect(() => {
         axios
-            .get(`${REST_URL}/api/settings`, {
+            .get(`${REST_URL}/api/slacknotifications`, {
                 params: {
                     userId: userId,
                 },
@@ -108,6 +110,21 @@ const SlackNotifications = () => {
 
     return (
         <div className="slackNotifications-container">
+            <Tooltip
+                title="How to find your Slack Member ID"
+                placement="top">
+                <IconButton
+                    className="slackNotifications-tutorial"
+                    onClick={() => {
+                        window.open(
+                            SLACK_MEMBER_ID_TUTORIAL,
+                            "_blank",
+                            "noopener,noreferrer"
+                        );
+                    }}>
+                    <InfoOutlinedIcon />
+                </IconButton>
+            </Tooltip>
             <div className="slackNotifications-title">Slack notifications</div>
             <div className="slackNotifications-changeMemberId-container">
                 <TextField

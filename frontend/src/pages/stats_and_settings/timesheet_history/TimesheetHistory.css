@@ -4,13 +4,26 @@
     box-sizing: border-box;
     box-shadow: var(--default-box-shadow);
     padding: 1.5rem;
-}
-
-.timeSheetHistory-container {
     grid-area: 2 / 1 / 4 / 3;
 }
 
 .timeSheetHistory-title {
     font-size: 1.5rem;
     font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.timesheetHistory-table-container {
+    max-height: calc(100% - 2.5rem);
+    flex-grow: 1;
+    overflow-y: overlay;
+}
+
+.timesheetHistory-table {
+    width: 100%;
+    height: 100%;
+}
+
+.timesheetHistory-table-header-cell {
+    font-weight: bold !important;
 }

@@ -83,7 +83,7 @@ export const insertUser = async (database, username, password, email) => {
         username: username,
         password: encryptPassword(password),
         email: email,
-        vacationDaysRemaining: DEFAULT_VACATION_DAYS,
+        defaultVacationDays: DEFAULT_VACATION_DAYS,
         workDaysAdded: DEFAULT_WORKDAYS_ADDED,
         vacationDaysAdded: DEFAULT_VACATION_DAYS_ADDED,
         slackSubscription: DEFAULT_SLACK_SUBSCRIPTION,
@@ -143,5 +143,15 @@ export const changeEmail = async (database, userId, email) => {
 export const changeSlackMemberId = async (database, userId, slackMemberId) => {
     await updateUser(database, userId, {
         slackMemberId: slackMemberId,
+    });
+};
+
+export const changeDefaultVacationDays = async (
+    database,
+    userId,
+    defaultVacationDays
+) => {
+    await updateUser(database, userId, {
+        defaultVacationDays: defaultVacationDays,
     });
 };
