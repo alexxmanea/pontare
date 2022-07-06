@@ -1,4 +1,4 @@
-const REST_PROTOCOL = "http";
+const REST_PROTOCOL = "https";
 const REST_ADDRESS = window.location.href.split("/")[2].split(":")[0];
 const REST_PORT = "3001";
 export const REST_URL = `${REST_PROTOCOL}://${REST_ADDRESS}:${REST_PORT}`;

@@ -1,4 +1,7 @@
 import express from "express";
+import https from "https";
+import fs from "fs";
+import path from "path";
 import cors from "cors";
 import bodyParser from "body-parser";
 import {
@@ -37,6 +40,9 @@ const REST_ADDRESS = "82.76.148.236";
 const REST_PORT = "3001";
 const REST_URL = `${REST_PROTOCOL}://${REST_ADDRESS}:${REST_PORT}`;
 
+const SSL_CERT_PATH = "secure/certificates/certificate.pem";
+const SSL_KEY_PATH = "secure/certificates/key.pem";
+
 const SERVER_STARTED_MESSAGE = `${REST_PROTOCOL.toUpperCase()} server listening on ${REST_URL}`;
 
 const INVALID_CREDENTIALS = "invalid_credentials";
@@ -48,6 +54,18 @@ export const createServer = () => {
     addServerOptions(httpServer);
 
     return httpServer;
+};
+
+const getSslCredentials = () => {
+    const projectPath = path.resolve(path.dirname(""));
+    const sslCertPath = path.join(projectPath, SSL_CERT_PATH);
+    const sslCert = fs.readFileSync(sslCertPath, "utf8");
+
+    const sslKeyPath = path.join(projectPath, SSL_KEY_PATH);
+    const sslKey = fs.readFileSync(sslKeyPath, "utf8");
+    const sslCredentials = { cert: sslCert, key: sslKey };
+
+    return sslCredentials;
 };
 
 const addServerOptions = (httpServer) => {
@@ -202,7 +220,7 @@ export const startServer = (httpServer, firebaseDatabase) => {
                 data.slackMemberId
             )
         );
-        
+
         response.end();
     });
 
@@ -407,7 +425,9 @@ export const startServer = (httpServer, firebaseDatabase) => {
         }
     );
 
-    httpServer.listen(REST_PORT, () => {
-        console.log(SERVER_STARTED_MESSAGE);
-    });
+    https
+        .createServer(getSslCredentials(), httpServer)
+        .listen(REST_PORT, () => {
+            console.log(SERVER_STARTED_MESSAGE);
+        });
 };
