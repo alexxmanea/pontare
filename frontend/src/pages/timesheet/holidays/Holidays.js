@@ -4,20 +4,31 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import PUBLIC_HOLIDAYS from "../../../assets/public_holidays.json";
 
 const PUBLIC_HOLIDAYS_URL = "https://www.zileliberelegale.ro/";
+const PUBLIC_HOLIDAYS_SOURCE = "Source: zileliberelegale.ro";
 
 const Holidays = () => {
     return (
         <div className="holidays-container">
-            <a
-                className="holidays-title"
-                href={PUBLIC_HOLIDAYS_URL}
-                target="_blank"
-                rel="noopener noreferrer">
-                Public holidays
-            </a>
+            <Tooltip title={PUBLIC_HOLIDAYS_SOURCE} placement="top">
+                <IconButton
+                    className="holidays-source"
+                    onClick={() => {
+                        window.open(
+                            PUBLIC_HOLIDAYS_URL,
+                            "_blank",
+                            "noopener,noreferrer"
+                        );
+                    }}>
+                    <InfoOutlinedIcon />
+                </IconButton>
+            </Tooltip>
+            <div className="holidays-title">Public holidays</div>
             <div className="holidays-table-container">
                 <Table className="holidays-table" stickyHeader>
                     <TableHead>

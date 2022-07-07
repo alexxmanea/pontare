@@ -30,7 +30,7 @@ const TimesheetHistory = () => {
             .then((response) => {
                 const data = response.data;
                 data.timesheetHistory &&
-                    setTimesheetHistory([...data.timesheetHistory]);
+                    setTimesheetHistory(sortTimesheetHistory(data.timesheetHistory));
             })
             .catch((error) => {
                 setDialogFields({
@@ -39,6 +39,23 @@ const TimesheetHistory = () => {
                 });
             });
     }, []);
+
+    const sortTimesheetHistory = (
+        timesheetHistory,
+        property = "startingDay"
+    ) => {
+        const timesheetHistoryCopy = [...timesheetHistory];
+
+        return timesheetHistoryCopy.sort((a, b) => {
+            if (a[property] < b[property]) {
+                return -1;
+            }
+            if (a[property] > b[property]) {
+                return 1;
+            }
+            return 0;
+        });
+    };
 
     return (
         <div className="timeSheetHistory-container">

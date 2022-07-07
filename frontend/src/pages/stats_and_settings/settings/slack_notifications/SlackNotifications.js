@@ -7,12 +7,12 @@ import axios from "axios";
 import { TextField, Button } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const SlackNotifications = () => {
     const [userId] = useGlobalState("userId");

@@ -15,6 +15,9 @@ import {
     changeEmail,
     changeSlackMemberId,
     changeDefaultVacationDays,
+    markDailyTask,
+    getUsers,
+    getDailyTasks,
 } from "./Firebase.js";
 import {
     addToTimesheet,
@@ -34,11 +37,12 @@ import moment from "moment";
 import { composeSlackManualTimesheetMessage } from "./Utils.js";
 import { sendSlackNotification } from "./notifications/SlackNotifications.js";
 import { sendEmailNotification } from "./notifications/EmailNotifications.js";
+import { exit } from "process";
 
-const REST_PROTOCOL = "http";
-const REST_ADDRESS = "82.76.148.236";
+const REST_PROTOCOL = "https";
+const REST_ADDRESS = "pontare.go.ro";
 const REST_PORT = "3001";
-const REST_URL = `${REST_PROTOCOL}://${REST_ADDRESS}:${REST_PORT}`;
+const REST_URL = `${REST_PROTOCOL}://${REST_ADDRESS}`;
 
 const SSL_CERT_PATH = "secure/certificates/certificate.pem";
 const SSL_KEY_PATH = "secure/certificates/key.pem";
@@ -398,6 +402,7 @@ export const startServer = (httpServer, firebaseDatabase) => {
             workDaysAdded: data.workDaysAdded,
             vacationDaysAdded: data.vacationDaysAdded,
             defaultVacationDays: data.defaultVacationDays,
+            nextVacation: data.nextVacation[0],
         };
 
         response.send(responseBody);
@@ -430,4 +435,99 @@ export const startServer = (httpServer, firebaseDatabase) => {
         .listen(REST_PORT, () => {
             console.log(SERVER_STARTED_MESSAGE);
         });
+};
+
+export const runDailyTask = async (database) => {
+    const tasks = await getDailyTasks(database);
+
+    const currentMoment = moment();
+
+    let taskFound = false;
+    tasks.forEach((task) => {
+        if (task === currentMoment.format(DATE_FORMAT)) {
+            taskFound = true;
+        }
+    });
+
+    if (taskFound) {
+        console.log("Task already done.");
+        return;
+    }
+
+    const snapshot = await getUsers(database);
+
+    const timesheetEntry = {
+        startingDay: currentMoment.format(DATE_FORMAT),
+        endingDay: null,
+        daysUsed: 0,
+        type: DAY_TYPES.workday,
+    };
+
+    let subscribedUsersData = [];
+
+    snapshot.forEach((entry) => {
+        const data = entry.data();
+
+        if (data.automaticTimesheetSubscription) {
+            subscribedUsersData.push({ data: data, id: entry.id });
+        }
+    });
+
+    for (let i = 0; i < subscribedUsersData.length; i++) {
+        const { page, browser, retCode } = await startPageAndLogin(
+            subscribedUsersData[i].data.username,
+            subscribedUsersData[i].data.password
+        );
+
+        if (!retCode) {
+            exit(0);
+        }
+
+        const remoteTimesheetPageContent = await getRemoteTimesheetPageContent(
+            page
+        );
+
+        const wasAdded = await addToTimesheet(
+            page,
+            remoteTimesheetPageContent,
+            currentMoment,
+            DAY_TYPES.workday
+        );
+
+        await closeBrowser(browser);
+
+        if (wasAdded) {
+            let timesheetHistory = [];
+            timesheetHistory.push(timesheetEntry);
+
+            subscribedUsersData[i].data.workDaysAdded += 1;
+            subscribedUsersData[i].data.timesheetHistory = [
+                ...subscribedUsersData[i].data.timesheetHistory,
+                ...timesheetHistory,
+            ];
+
+            delete subscribedUsersData[i].data.password;
+
+            await updateUser(
+                database,
+                subscribedUsersData[i].id,
+                subscribedUsersData[i].data
+            );
+
+            sendEmailNotification(
+                subscribedUsersData[i].data,
+                composeEmailManualTimesheetMessage(timesheetHistory)
+            );
+
+            sendSlackNotification(
+                subscribedUsersData[i].data,
+                composeSlackManualTimesheetMessage(
+                    timesheetHistory,
+                    subscribedUsersData[i].data.slackMemberId
+                )
+            );
+        }
+    }
+
+    await markDailyTask(database, currentMoment.format(DATE_FORMAT));
 };

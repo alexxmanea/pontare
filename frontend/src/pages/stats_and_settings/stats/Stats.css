@@ -10,25 +10,24 @@
     row-gap: 1rem;
 }
 
-.stats-defaultVacationDays-container {
-    display: flex;
-    flex-direction: column;
-    row-gap: 1rem;
-    margin-bottom: 1rem;
-}
-
 .stats-title {
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 1rem;
 }
 
-.stats-vacation {
+.stats-vacation-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+.stats-vacation-days-modify {
     display: flex;
     gap: 1rem;
 }
 
-.stats-vacation-progress {
+.stats-progressBar {
     height: 3rem !important;
     font-weight: bold !important;
 }
@@ -55,12 +54,53 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
-.stats-defaultVacationDays-subtitle {
+.stats-vacation-subtitle {
     font-size: 1.2rem;
     font-weight: bold;
 }
 
-.stats-workDaysAdded-subtitle {
+.stats-daysAtWork-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+.stats-daysAtWork-subtitle {
     font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.stats-nextVacation {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.stats-nextVacation-icon {
+    width: 3rem !important;
+    height: 3rem !important;
+}
+
+.stats-nextVacation-countdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stats-nextVacation-time {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.stats-nextVacation-time-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.1rem;
+}
+
+.stats-nextVacation-value {
+    font-size: 2rem;
     font-weight: bold;
 }

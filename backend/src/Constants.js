@@ -45,5 +45,6 @@ export const DEFAULT_SLACK_MEMBER_ID = null;
 export const DEFAULT_EMAIL_SUBSCRIPTION = true;
 export const DEFAULT_DAILY_TIMESHEET_SUBSCRIPTION = false;
 export const DEFAULT_TIMESHEET_HISTORY = [];
+export const DEFAULT_NEXT_VACATIONS = [];
 
 export const SERVER_ERROR = "server_error";

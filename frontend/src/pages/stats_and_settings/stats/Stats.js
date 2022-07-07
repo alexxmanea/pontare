@@ -13,6 +13,10 @@ import { TextField, Button } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import ReplayIcon from "@mui/icons-material/Replay";
+import moment from "moment";
+import { DATE_FORMAT } from "../../../common/Constants";
+import Divider from "@mui/material/Divider";
+import VacationIcon from "../../../assets/images/VacationIcon.png";
 
 const Stats = () => {
     const [userId] = useGlobalState("userId");
@@ -21,6 +25,7 @@ const Stats = () => {
     const [vacationDaysAdded, setVacationDaysAdded] = useState(0);
     const [defaultVacationDays, setDefaultVacationDays] = useState(0);
     const [dialogFields, setDialogFields] = useState(null);
+    const [nextVacation, setNextVacation] = useState(null);
 
     useEffect(() => {
         axios
@@ -38,6 +43,17 @@ const Stats = () => {
                     setDefaultVacationDays(data.defaultVacationDays);
                 data.defaultVacationDays &&
                     setVacationDaysText(data.defaultVacationDays);
+                if (data.nextVacation) {
+                    let nextVacationMoment = moment(
+                        data.nextVacation,
+                        DATE_FORMAT
+                    );
+                    nextVacationMoment.hours(0);
+                    nextVacationMoment.minutes(0);
+                    nextVacationMoment.seconds(0);
+
+                    setNextVacation(nextVacationMoment);
+                }
             })
             .catch((error) => {
                 setDialogFields({
@@ -46,6 +62,19 @@ const Stats = () => {
                 });
             });
     }, []);
+
+    useEffect(() => {
+        let updateNextVacationTimer;
+        if (moment.isMoment(nextVacation)) {
+            updateNextVacationTimer = setInterval(() => {
+                setNextVacation(nextVacation.clone());
+            }, 60 * 1000);
+        }
+
+        return () => {
+            clearInterval(updateNextVacationTimer);
+        };
+    }, [nextVacation]);
 
     const changeDefaultVacationDays = () => {
         axios
@@ -72,14 +101,68 @@ const Stats = () => {
             });
     };
 
+    const getNextVacation = () => {
+        let duration = moment.duration(nextVacation.diff(moment()));
+
+        let days = Math.floor(duration.asDays());
+        duration.subtract(moment.duration(days, "days"));
+
+        let hours = Math.floor(duration.hours());
+        duration.subtract(moment.duration(hours, "hours"));
+
+        let minutes = Math.floor(duration.minutes());
+        duration.subtract(moment.duration(minutes, "minutes"));
+
+        let daysString = String("0" + days).slice(-2);
+        let hoursString = String("0" + hours).slice(-2);
+        let minutesString = String("0" + minutes).slice(-2);
+
+        const nextVacationComponent = (
+            <div className="stats-nextVacation">
+                <img
+                    src={VacationIcon}
+                    className="stats-nextVacation-icon"
+                    alt="Vacation"
+                />
+                <div className="stats-nextVacation-countdown">
+                    <div className="stats-nextVacation-time">
+                        <div className="stats-nextVacation-time-item">
+                            <div className="stats-nextVacation-value">
+                                {daysString}
+                            </div>
+                            <div className="stats-nextVacation-text">days</div>
+                        </div>
+                        <div className="stats-nextVacation-time-item">
+                            <div className="stats-nextVacation-value">
+                                {hoursString}
+                            </div>
+                            <div className="stats-nextVacation-text">hours</div>
+                        </div>
+                        <div className="stats-nextVacation-time-item">
+                            <div className="stats-nextVacation-value">
+                                {minutesString}
+                            </div>
+                            <div className="stats-nextVacation-text">
+                                minutes
+                            </div>
+                        </div>
+                    </div>
+                    <div className="stats-nextVacation-text">
+                        To your vacation
+                    </div>
+                </div>
+            </div>
+        );
+
+        return nextVacationComponent;
+    };
+
     return (
         <div className="stats-container">
             <div className="stats-title">Stats</div>
-            <div className="stats-defaultVacationDays-container">
-                <div className="stats-defaultVacationDays-subtitle">
-                    Default vacation days
-                </div>
-                <div className="stats-vacation">
+            <div className="stats-vacation-container">
+                <div className="stats-vacation-subtitle">Vacation days</div>
+                <div className="stats-vacation-days-modify">
                     <TextField
                         className="stats-vacation-textField"
                         required
@@ -120,7 +203,7 @@ const Stats = () => {
                     </Button>
                 </div>
                 <ProgressBar
-                    className="stats-vacation-progress"
+                    className="stats-progressBar"
                     now={
                         ((defaultVacationDays - vacationDaysAdded) /
                             defaultVacationDays) *
@@ -132,8 +215,17 @@ const Stats = () => {
                     variant="success"
                 />
             </div>
-            <div className="stats-workDaysAdded-subtitle">
-                Work days added: {workDaysAdded}
+            <Divider />
+            {nextVacation && getNextVacation()}
+            {nextVacation && <Divider />}
+            <div className="stats-daysAtWork-container">
+                <div className="stats-daysAtWork-subtitle">Days at work</div>
+                <ProgressBar
+                    className="stats-progressBar"
+                    now={100}
+                    label={`${workDaysAdded} days at work`}
+                    variant="success"
+                />
             </div>
             <Dialog open={dialogFields !== null}>
                 <DialogTitle>{dialogFields?.title}</DialogTitle>

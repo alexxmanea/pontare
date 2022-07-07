@@ -1,5 +1,5 @@
 import { initializeApp, cert } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import SERVICE_ACCOUNT from "../secure/firebase_service_account.json" assert { type: "json" };
 import { encryptPassword, decryptPassword } from "./PasswordEncryption.js";
 import {
@@ -11,6 +11,7 @@ import {
     DEFAULT_EMAIL_SUBSCRIPTION,
     DEFAULT_DAILY_TIMESHEET_SUBSCRIPTION,
     DEFAULT_TIMESHEET_HISTORY,
+    DEFAULT_NEXT_VACATIONS,
 } from "./Constants.js";
 
 const FIREBASE_DATABASE_URL =
@@ -26,7 +27,7 @@ export const initializeFirebaseApp = () => {
 };
 
 export const checkUserCredentials = async (database, username, password) => {
-    const snapshot = await database.collection("users").get();
+    const snapshot = await getUsers(database);
 
     let isValidLoginInfo = null;
 
@@ -46,7 +47,7 @@ export const checkUserCredentials = async (database, username, password) => {
 };
 
 export const getUserByUsername = async (database, username) => {
-    const snapshot = await database.collection("users").get();
+    const snapshot = await getUsers(database);
 
     let data = null;
     let id = null;
@@ -91,13 +92,14 @@ export const insertUser = async (database, username, password, email) => {
         emailSubscription: DEFAULT_EMAIL_SUBSCRIPTION,
         automaticTimesheetSubscription: DEFAULT_DAILY_TIMESHEET_SUBSCRIPTION,
         timesheetHistory: DEFAULT_TIMESHEET_HISTORY,
+        nextVacations: DEFAULT_NEXT_VACATIONS,
     });
 
     return true;
 };
 
 const checkIfUserExists = async (database, username, email) => {
-    const snapshot = await database.collection("users").get();
+    const snapshot = await getUsers(database);
 
     let userExists = false;
 
@@ -154,4 +156,21 @@ export const changeDefaultVacationDays = async (
     await updateUser(database, userId, {
         defaultVacationDays: defaultVacationDays,
     });
+};
+
+export const markDailyTask = async (database, dateString) => {
+    await database
+        .collection("logs")
+        .doc("daily_tasks")
+        .update({ tasks: FieldValue.arrayUnion(dateString) });
+};
+
+export const getUsers = async (database) => {
+    const usersData = database.collection("users").get();
+    return usersData;
+};
+
+export const getDailyTasks = async (database) => {
+    const tasksData = database.collection("logs").doc("daily_tasks").get();
+    return tasksData;
 };
