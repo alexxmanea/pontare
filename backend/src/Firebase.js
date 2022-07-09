@@ -166,11 +166,18 @@ export const markDailyTask = async (database, dateString) => {
 };
 
 export const getUsers = async (database) => {
-    const usersData = database.collection("users").get();
+    const usersData = await database.collection("users").get();
     return usersData;
 };
 
 export const getDailyTasks = async (database) => {
-    const tasksData = database.collection("logs").doc("daily_tasks").get();
+    const tasksData = await database.collection("logs").doc("daily_tasks").get();
     return tasksData;
+};
+
+export const getTeamMembers = async (database, team) => {
+    const teamData = await database.collection("teams").doc(team).get();
+    const teamMembers = teamData.data();
+
+    return teamMembers.members;
 };

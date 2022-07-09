@@ -1,0 +1,7 @@
+.memberCard-container {
+    height: 15rem;
+    border-radius: 0.3rem;
+    background-color: var(--color-foreground);
+    box-sizing: border-box;
+    box-shadow: var(--default-box-shadow);
+}

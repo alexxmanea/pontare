@@ -4,6 +4,7 @@ import Register from "./pages/register/Register";
 import WithNavbar from "./pages/navbar/WithNavbar";
 import Timesheet from "./pages/timesheet/Timesheet";
 import StatsAndSettings from "./pages/stats_and_settings/StatsAndSettings";
+import Team from "./pages/team/Team";
 import "@fontsource/roboto";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./routing/ProtectedRoutes";
@@ -22,6 +23,7 @@ function App() {
                             path="/stats-settings"
                             element={<StatsAndSettings />}
                         />
+                        <Route path="/team" element={<Team />} />
                     </Route>
                 </Route>
                 <Route path="*" element={<UnknownRoute />} />

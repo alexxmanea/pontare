@@ -31,7 +31,10 @@ const Navbar = () => {
                 <Button onClick={() => navigate("/timesheet")}>
                     Timesheet
                 </Button>
-                <Button onClick={() => navigate("/stats-settings")}>{"Stats & Settings"}</Button>
+                <Button onClick={() => navigate("/stats-settings")}>
+                    {"Stats & Settings"}
+                </Button>
+                <Button onClick={() => navigate("/team")}>{"Team"}</Button>
             </div>
             <Button
                 className="navbar-logout"

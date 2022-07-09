@@ -18,6 +18,7 @@ import {
     markDailyTask,
     getUsers,
     getDailyTasks,
+    getTeamMembers,
 } from "./Firebase.js";
 import {
     addToTimesheet,
@@ -429,6 +430,26 @@ export const startServer = (httpServer, firebaseDatabase) => {
             response.end();
         }
     );
+
+    httpServer.get("/api/team", async (request, response) => {
+        const userId = request?.query?.userId;
+
+        if (!userId || !userId?.length) {
+            response.send(SERVER_ERROR);
+            return;
+        }
+
+        const data = await getUserData(firebaseDatabase, userId);
+
+        const teamMembers = await getTeamMembers(firebaseDatabase, data.team);
+
+        const responseBody = {
+            team: teamMembers,
+        };
+
+        response.send(responseBody);
+        response.end();
+    });
 
     https
         .createServer(getSslCredentials(), httpServer)
