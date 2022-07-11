@@ -4,4 +4,46 @@
     background-color: var(--color-foreground);
     box-sizing: border-box;
     box-shadow: var(--default-box-shadow);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+.memberCard-details-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.memberCard-photo {
+    object-fit: cover;
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    border: solid 3px;
+}
+
+.memberCard-photo-notRegistered {
+    border-color: red;
+}
+
+.memberCard-photo-working {
+    border-color: green;
+}
+
+.memberCard-photo-vacation {
+    border-color: yellow;
+}
+
+.memberCard-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.memberCard-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.memberCard-email {
 }

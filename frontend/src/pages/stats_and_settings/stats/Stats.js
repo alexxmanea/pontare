@@ -45,7 +45,7 @@ const Stats = () => {
                     setVacationDaysText(data.defaultVacationDays);
                 if (data.nextVacation) {
                     let nextVacationMoment = moment(
-                        data.nextVacation,
+                        data.nextVacation.startingDay,
                         DATE_FORMAT
                     );
                     nextVacationMoment.hours(0);

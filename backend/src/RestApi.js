@@ -150,6 +150,7 @@ export const startServer = (httpServer, firebaseDatabase) => {
         let vacationDaysAdded = 0;
         let workDaysAdded = 0;
         let timesheetHistory = [];
+        let nextVacation = [];
 
         for (let i = 0; i < timesheet.length; i++) {
             const entry = timesheet[i];
@@ -201,11 +202,13 @@ export const startServer = (httpServer, firebaseDatabase) => {
             }
 
             timesheetHistory.push(timesheetEntry);
+            nextVacation.push({startingDay: timesheetEntry.startingDay, endingDay: timesheetEntry.endingDay});
         }
 
         data.vacationDaysAdded += vacationDaysAdded;
         data.workDaysAdded += workDaysAdded;
         data.timesheetHistory = [...data.timesheetHistory, ...timesheetHistory];
+        data.nextVacation = [...data.nextVacation, ...nextVacation];
 
         delete data.password;
 
@@ -403,7 +406,7 @@ export const startServer = (httpServer, firebaseDatabase) => {
             workDaysAdded: data.workDaysAdded,
             vacationDaysAdded: data.vacationDaysAdded,
             defaultVacationDays: data.defaultVacationDays,
-            nextVacation: data.nextVacation[0],
+            nextVacation: data?.nextVacation?.length ? data.nextVacation[0] : null,
         };
 
         response.send(responseBody);
@@ -439,12 +442,32 @@ export const startServer = (httpServer, firebaseDatabase) => {
             return;
         }
 
-        const data = await getUserData(firebaseDatabase, userId);
+        const userData = await getUserData(firebaseDatabase, userId);
+        const teamMembers = await getTeamMembers(
+            firebaseDatabase,
+            userData.team
+        );
+        const allUsers = await getUsers(firebaseDatabase);
 
-        const teamMembers = await getTeamMembers(firebaseDatabase, data.team);
+        let team = {};
+        teamMembers.forEach((email) => {
+            team[email] = { email: email, isRegistered: false };
+        });
+
+        allUsers.forEach((entry) => {
+            const user = entry.data();
+
+            if (user.team === userData.team) {
+                team[user.email].isRegistered = true;
+                team[user.email].username = user.username;
+                team[user.email].nextVacation = user.nextVacation?.length
+                    ? user.nextVacation[0]
+                    : null;
+            }
+        });
 
         const responseBody = {
-            team: teamMembers,
+            team: Object.values(team),
         };
 
         response.send(responseBody);

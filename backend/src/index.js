@@ -27,10 +27,3 @@ process.on("SIGINT", () => {
     });
     schedule.gracefulShutdown();
 });
-
-// process.on("uncaughtException", () => {
-//     httpServer.close(() => {
-//         console.log("Server closed");
-//     });
-//     schedule.gracefulShutdown();
-// });

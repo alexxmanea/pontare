@@ -41,11 +41,11 @@ const Team = () => {
         <div className="team-container">
             {members &&
                 members.length &&
-                members.map((memberEmail, index) => {
+                members.map((memberData, index) => {
                     return (
                         <MemberCard
                             key={`memberCard-${index}`}
-                            email={memberEmail}
+                            data={memberData}
                         />
                     );
                 })}
