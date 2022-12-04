@@ -1,0 +1,10 @@
+{
+    "apps": [
+        {
+            "name": "Pontare frontend",
+            "cwd": "/mnt/SSD/pontare/frontend",
+            "script": "npm",
+            "args": "run serve-build"
+        }
+    ]
+}

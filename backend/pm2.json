@@ -1,0 +1,10 @@
+{
+    "apps": [
+        {
+            "name": "Pontare backend",
+            "cwd": "/mnt/SSD/pontare/backend",
+            "script": "node",
+            "args": "src/pontare.js"
+        }
+    ]
+}
