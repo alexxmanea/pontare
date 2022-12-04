@@ -1,26 +1,13 @@
 import { initializeApp, cert } from "firebase-admin/app";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import SERVICE_ACCOUNT from "../secure/firebase_service_account.json" assert { type: "json" };
+import FIREBASE_DETAILS from "../secure/firebase.json" assert { type: "json" };
 import { encryptPassword, decryptPassword } from "./PasswordEncryption.js";
-import {
-    DEFAULT_VACATION_DAYS,
-    DEFAULT_WORKDAYS_ADDED,
-    DEFAULT_VACATION_DAYS_ADDED,
-    DEFAULT_SLACK_SUBSCRIPTION,
-    DEFAULT_SLACK_MEMBER_ID,
-    DEFAULT_EMAIL_SUBSCRIPTION,
-    DEFAULT_DAILY_TIMESHEET_SUBSCRIPTION,
-    DEFAULT_TIMESHEET_HISTORY,
-    DEFAULT_NEXT_VACATIONS,
-} from "./Constants.js";
-
-const FIREBASE_DATABASE_URL =
-    "https://pontare-ce116-default-rtdb.europe-west1.firebasedatabase.app";
+import { DEFAULT_USER_DATA } from "./Constants.js";
 
 export const initializeFirebaseApp = () => {
     initializeApp({
-        credential: cert(SERVICE_ACCOUNT),
-        databaseURL: FIREBASE_DATABASE_URL,
+        credential: cert(FIREBASE_DETAILS.service_account),
+        databaseURL: FIREBASE_DETAILS.database_url,
     });
 
     return getFirestore();
@@ -84,15 +71,7 @@ export const insertUser = async (database, username, password, email) => {
         username: username,
         password: encryptPassword(password),
         email: email,
-        defaultVacationDays: DEFAULT_VACATION_DAYS,
-        workDaysAdded: DEFAULT_WORKDAYS_ADDED,
-        vacationDaysAdded: DEFAULT_VACATION_DAYS_ADDED,
-        slackSubscription: DEFAULT_SLACK_SUBSCRIPTION,
-        slackMemberId: DEFAULT_SLACK_MEMBER_ID,
-        emailSubscription: DEFAULT_EMAIL_SUBSCRIPTION,
-        automaticTimesheetSubscription: DEFAULT_DAILY_TIMESHEET_SUBSCRIPTION,
-        timesheetHistory: DEFAULT_TIMESHEET_HISTORY,
-        nextVacations: DEFAULT_NEXT_VACATIONS,
+        ...DEFAULT_USER_DATA,
     });
 
     return true;
@@ -171,7 +150,10 @@ export const getUsers = async (database) => {
 };
 
 export const getDailyTasks = async (database) => {
-    const tasksData = await database.collection("logs").doc("daily_tasks").get();
+    const tasksData = await database
+        .collection("logs")
+        .doc("daily_tasks")
+        .get();
     return tasksData;
 };
 

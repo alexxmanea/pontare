@@ -4,8 +4,7 @@ import schedule from "node-schedule";
 
 const firebaseDatabase = initializeFirebaseApp();
 
-const httpServer = createServer();
-startServer(httpServer, firebaseDatabase);
+const httpServer = startServer(createServer(), firebaseDatabase);
 
 const dailyTimesheetJob = schedule.scheduleJob(
     { hour: 3, minute: 36, second: 12 },

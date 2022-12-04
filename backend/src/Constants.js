@@ -30,21 +30,28 @@ export const FIELDS = {
     },
 };
 
-export const ETRANS_DATE_FORMAT = "YYYY-MM-DD";
-export const DATE_FORMAT = "DD/MM/YYYY";
+export const DATE_FORMATS = {
+    default: "DD/MM/YYYY",
+    etrans: "YYYY-MM-DD",
+};
 
 export const DAY_TYPES = { workday: "Workday", vacation: "Vacation" };
 export const ADD_TO_TIMESHEET_MAX_RETRIES = 3;
 export const ADD_TO_TIMESHEET_DELAY = 1000;
 
-export const DEFAULT_VACATION_DAYS = 25;
-export const DEFAULT_WORKDAYS_ADDED = 0;
-export const DEFAULT_VACATION_DAYS_ADDED = 0;
-export const DEFAULT_SLACK_SUBSCRIPTION = false;
-export const DEFAULT_SLACK_MEMBER_ID = null;
-export const DEFAULT_EMAIL_SUBSCRIPTION = true;
-export const DEFAULT_DAILY_TIMESHEET_SUBSCRIPTION = false;
-export const DEFAULT_TIMESHEET_HISTORY = [];
-export const DEFAULT_NEXT_VACATIONS = [];
+export const DEFAULT_TEAM = "Dezvoltare";
+
+export const DEFAULT_USER_DATA = {
+    defaultVacationDays: 25,
+    workDaysAdded: 0,
+    vacationDaysAdded: 0,
+    slackSubscription: false,
+    slackMemberId: null,
+    emailSubscription: true,
+    automaticTimesheetSubscription: false,
+    timesheetHistory: [],
+    nextVacation: [],
+    team: DEFAULT_TEAM,
+};
 
 export const SERVER_ERROR = "server_error";

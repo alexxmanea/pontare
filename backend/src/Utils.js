@@ -1,4 +1,4 @@
-import { DATE_FORMAT, DAY_TYPES } from "./Constants.js";
+import { DATE_FORMATS, DAY_TYPES } from "./Constants.js";
 import PUBLIC_HOLIDAYS from "../assets/public_holidays.json" assert { type: "json" };
 
 export const delay = (milliseconds) => {
@@ -20,7 +20,7 @@ export const isHoliday = (momentValue) => {
     let isHoliday = false;
 
     PUBLIC_HOLIDAYS.forEach((holiday) => {
-        if (momentValue.format(DATE_FORMAT) === holiday.date) {
+        if (momentValue.format(DATE_FORMATS.default) === holiday.date) {
             isHoliday = true;
             return;
         }
@@ -34,10 +34,10 @@ export const isWeekendOrHoliday = (momentValue) => {
 };
 
 export const getTimesheetEntry = (interval, dayType, daysUsed) => {
-    const startingDay = moment(interval[0], DATE_FORMAT);
+    const startingDay = moment(interval[0], DATE_FORMATS.default);
     let endingDay = null;
     if (interval.length === 2) {
-        endingDay = moment(interval[1], DATE_FORMAT);
+        endingDay = moment(interval[1], DATE_FORMATS.default);
     }
 
     return {
@@ -48,83 +48,9 @@ export const getTimesheetEntry = (interval, dayType, daysUsed) => {
     };
 };
 
-export const composeSlackManualTimesheetMessage = (
-    timesheet,
-    slackMemberId
-) => {
-    const title = "Timesheet submitted";
-    const subtitle = `<@${slackMemberId}> added the following intervals to his timesheet:`;
-    const body = timesheet
-        .map((timesheetEntry) => {
-            const intervalString = parseDatesToString(
-                timesheetEntry.startingDay,
-                timesheetEntry.endingDay
-            );
-            const daysUsedString = timesheetEntry.daysUsed;
-            const dayTypeString = timesheetEntry.type;
-            if (dayTypeString === DAY_TYPES.workday) {
-                return `- ${intervalString} | ${dayTypeString}`;
-            } else {
-                return `- ${intervalString} | ${daysUsedString} days used | ${dayTypeString}`;
-            }
-        })
-        .join("\n");
-
-    const message = {
-        text: title + "\n" + subtitle + "\n" + body,
-        blocks: [
-            {
-                type: "header",
-                text: {
-                    type: "plain_text",
-                    text: title,
-                },
-            },
-            {
-                type: "section",
-                text: {
-                    type: "mrkdwn",
-                    text: subtitle,
-                },
-            },
-            {
-                type: "section",
-                text: {
-                    type: "plain_text",
-                    text: body,
-                },
-            },
-        ],
-    };
-
-    return message;
-};
-
-export const composeEmailManualTimesheetMessage = (timesheet) => {
-    const title = "Timesheet submitted";
-    const subtitle = `You added the following intervals to your timesheet:`;
-    const body = timesheet
-        .map((timesheetEntry) => {
-            const intervalString = parseDatesToString(
-                timesheetEntry.startingDay,
-                timesheetEntry.endingDay
-            );
-            const daysUsedString = timesheetEntry.daysUsed;
-            const dayTypeString = timesheetEntry.type;
-            if (dayTypeString === DAY_TYPES.workday) {
-                return `- ${intervalString} | ${dayTypeString}`;
-            } else {
-                return `- ${intervalString} | ${daysUsedString} days used | ${dayTypeString}`;
-            }
-        })
-        .join("\n");
-
-    return { subject: title, body: subtitle + "\n" + body };
-};
-
 export const parseIntervalToString = (interval) => {
     const intervalString = interval
-        .map((interval) => interval.format(DATE_FORMAT))
+        .map((interval) => interval.format(DATE_FORMATS.default))
         .join(" - ");
     return intervalString;
 };

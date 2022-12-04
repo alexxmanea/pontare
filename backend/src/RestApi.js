@@ -28,16 +28,21 @@ import {
     getRemoteTimesheetPageContent,
 } from "./Timesheet.js";
 import {
-    DATE_FORMAT,
+    DATE_FORMATS,
     ADD_TO_TIMESHEET_DELAY,
     DAY_TYPES,
     SERVER_ERROR,
 } from "./Constants.js";
-import { composeEmailManualTimesheetMessage, delay } from "./Utils.js";
+import { delay } from "./Utils.js";
 import moment from "moment";
-import { composeSlackManualTimesheetMessage } from "./Utils.js";
-import { sendSlackNotification } from "./notifications/SlackNotifications.js";
-import { sendEmailNotification } from "./notifications/EmailNotifications.js";
+import {
+    sendSlackNotification,
+    composeSlackTimesheetMessage,
+} from "./notifications/SlackNotifications.js";
+import {
+    sendEmailNotification,
+    composeEmailManualTimesheetMessage,
+} from "./notifications/EmailNotifications.js";
 import { exit } from "process";
 
 const REST_PROTOCOL = "https";
@@ -55,7 +60,7 @@ const INVALID_TIMESHEET_CREDENTIALS = "invalid_timesheet_credentials";
 const USER_EXISTS = "user_exists";
 
 export const createServer = () => {
-    const httpServer = express();
+    let httpServer = express();
     addServerOptions(httpServer);
 
     return httpServer;
@@ -159,19 +164,19 @@ export const startServer = (httpServer, firebaseDatabase) => {
                 interval.push(interval[0]);
             }
 
-            const startingDay = moment(interval[0], DATE_FORMAT);
-            const endingDay = moment(interval[1], DATE_FORMAT);
+            const startingDay = moment(interval[0], DATE_FORMATS.default);
+            const endingDay = moment(interval[1], DATE_FORMATS.default);
 
             const timesheetEntry = {
-                startingDay: startingDay.format(DATE_FORMAT),
-                endingDay: endingDay.format(DATE_FORMAT),
+                startingDay: startingDay.format(DATE_FORMATS.default),
+                endingDay: endingDay.format(DATE_FORMATS.default),
                 daysUsed: 0,
                 type: entry.type,
             };
 
             if (
-                startingDay.format(DATE_FORMAT) ===
-                endingDay.format(DATE_FORMAT)
+                startingDay.format(DATE_FORMATS.default) ===
+                endingDay.format(DATE_FORMATS.default)
             ) {
                 timesheetEntry.endingDay = null;
             }
@@ -199,10 +204,13 @@ export const startServer = (httpServer, firebaseDatabase) => {
                 workDaysAdded += timesheetEntry.daysUsed;
             } else {
                 vacationDaysAdded += timesheetEntry.daysUsed;
+                nextVacation.push({
+                    startingDay: timesheetEntry.startingDay,
+                    endingDay: timesheetEntry.endingDay,
+                });
             }
 
             timesheetHistory.push(timesheetEntry);
-            nextVacation.push({startingDay: timesheetEntry.startingDay, endingDay: timesheetEntry.endingDay});
         }
 
         data.vacationDaysAdded += vacationDaysAdded;
@@ -216,17 +224,14 @@ export const startServer = (httpServer, firebaseDatabase) => {
 
         await closeBrowser(browser);
 
-        sendEmailNotification(
+        await sendEmailNotification(
             data,
             composeEmailManualTimesheetMessage(timesheetHistory)
         );
 
-        sendSlackNotification(
+        await sendSlackNotification(
             data,
-            composeSlackManualTimesheetMessage(
-                timesheetHistory,
-                data.slackMemberId
-            )
+            composeSlackTimesheetMessage(timesheetHistory, data.slackMemberId)
         );
 
         response.end();
@@ -406,7 +411,9 @@ export const startServer = (httpServer, firebaseDatabase) => {
             workDaysAdded: data.workDaysAdded,
             vacationDaysAdded: data.vacationDaysAdded,
             defaultVacationDays: data.defaultVacationDays,
-            nextVacation: data?.nextVacation?.length ? data.nextVacation[0] : null,
+            nextVacation: data?.nextVacation?.length
+                ? data.nextVacation[0]
+                : null,
         };
 
         response.send(responseBody);
@@ -474,7 +481,7 @@ export const startServer = (httpServer, firebaseDatabase) => {
         response.end();
     });
 
-    https
+    return https
         .createServer(getSslCredentials(), httpServer)
         .listen(REST_PORT, () => {
             console.log(SERVER_STARTED_MESSAGE);
@@ -488,7 +495,7 @@ export const runDailyTask = async (database) => {
 
     let taskFound = false;
     tasks.forEach((task) => {
-        if (task === currentMoment.format(DATE_FORMAT)) {
+        if (task === currentMoment.format(DATE_FORMATS.default)) {
             taskFound = true;
         }
     });
@@ -501,7 +508,7 @@ export const runDailyTask = async (database) => {
     const snapshot = await getUsers(database);
 
     const timesheetEntry = {
-        startingDay: currentMoment.format(DATE_FORMAT),
+        startingDay: currentMoment.format(DATE_FORMATS.default),
         endingDay: null,
         daysUsed: 0,
         type: DAY_TYPES.workday,
@@ -558,14 +565,14 @@ export const runDailyTask = async (database) => {
                 subscribedUsersData[i].data
             );
 
-            sendEmailNotification(
+            await sendEmailNotification(
                 subscribedUsersData[i].data,
                 composeEmailManualTimesheetMessage(timesheetHistory)
             );
 
-            sendSlackNotification(
+            await sendSlackNotification(
                 subscribedUsersData[i].data,
-                composeSlackManualTimesheetMessage(
+                composeSlackTimesheetMessage(
                     timesheetHistory,
                     subscribedUsersData[i].data.slackMemberId
                 )
@@ -573,5 +580,5 @@ export const runDailyTask = async (database) => {
         }
     }
 
-    await markDailyTask(database, currentMoment.format(DATE_FORMAT));
+    await markDailyTask(database, currentMoment.format(DATE_FORMATS.default));
 };

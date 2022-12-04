@@ -25,9 +25,19 @@ const Team = () => {
             })
             .then((response) => {
                 const data = response.data;
-                data.team &&
-                    data.team.length > 0 &&
-                    setMembers([...data.team]);
+                if (data?.team && data?.team?.length > 0) {
+                    const team = [...data.team];
+                    team.sort((a, b) => {
+                        if (a.email < b.email) {
+                            return -1;
+                        }
+                        if (a.email > b.email) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    setMembers(team);
+                }
             })
             .catch((error) => {
                 setDialogFields({
@@ -39,8 +49,7 @@ const Team = () => {
 
     return (
         <div className="team-container">
-            {members &&
-                members.length &&
+            {!!(members && members.length) &&
                 members.map((memberData, index) => {
                     return (
                         <MemberCard

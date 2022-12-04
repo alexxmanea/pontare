@@ -1,19 +1,20 @@
 import nodemailer from "nodemailer";
 import EMAIL_CREDENTIALS from "../../secure/email_credentials.json" assert { type: "json" };
+import { parseDatesToString } from "../Utils.js";
+import { DAY_TYPES } from "../Constants.js";
 
-export const sendEmailNotification = async (data, emailData) => {
-    if (
-        data.emailSubscription !== true ||
-        data.email === undefined ||
-        data.email === null ||
-        !data.email?.length
-    ) {
+export const sendEmailNotification = async (data, message) => {
+    if (data?.emailSubscription !== true || !data?.email) {
         return;
     }
 
+    await sendEmail(data.email, message);
+};
+
+export const sendEmail = async (email, data) => {
     const transporter = nodemailer.createTransport({
-        host: "mail.inovium.ro",
-        port: 465,
+        host: EMAIL_CREDENTIALS.host,
+        port: EMAIL_CREDENTIALS.port,
         secure: true,
         auth: {
             user: EMAIL_CREDENTIALS.username,
@@ -22,15 +23,33 @@ export const sendEmailNotification = async (data, emailData) => {
     });
 
     const mailOptions = {
-        from: `Pontare <${EMAIL_CREDENTIALS.username}>`,
-        to: data.email,
-        subject: emailData.subject,
-        text: emailData.body,
+        from: `${EMAIL_CREDENTIALS.name} <${EMAIL_CREDENTIALS.username}>`,
+        to: email,
+        subject: data.subject,
+        text: data.body,
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log(error);
-        }
-    });
+    await transporter.sendMail(mailOptions);
+};
+
+export const composeEmailManualTimesheetMessage = (timesheet) => {
+    const title = "Timesheet submitted";
+    const subtitle = `You added the following intervals to your timesheet:`;
+    const body = timesheet
+        .map((timesheetEntry) => {
+            const intervalString = parseDatesToString(
+                timesheetEntry.startingDay,
+                timesheetEntry.endingDay
+            );
+            const daysUsedString = timesheetEntry.daysUsed;
+            const dayTypeString = timesheetEntry.type;
+            if (dayTypeString === DAY_TYPES.workday) {
+                return `- ${intervalString} | ${dayTypeString}`;
+            } else {
+                return `- ${intervalString} | ${daysUsedString} days used | ${dayTypeString}`;
+            }
+        })
+        .join("\n");
+
+    return { subject: title, body: subtitle + "\n" + body };
 };

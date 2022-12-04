@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 import {
     LOGIN_URL,
     FIELDS,
-    ETRANS_DATE_FORMAT,
+    DATE_FORMATS,
     DAY_TYPES,
 } from "./Constants.js";
 import { decryptPassword } from "./PasswordEncryption.js";
@@ -95,7 +95,7 @@ const dateIsAlreadyInTimesheet = async (
 ) => {
     if (
         remoteTimesheetPageContent.includes(
-            momentDate.format(ETRANS_DATE_FORMAT)
+            momentDate.format(DATE_FORMATS.etrans)
         )
     ) {
         return true;
@@ -175,7 +175,7 @@ export const addToTimesheet = async (
         (element, value) => {
             element.value = value;
         },
-        momentDate.format(ETRANS_DATE_FORMAT)
+        momentDate.format(DATE_FORMATS.etrans)
     );
 
     // Modificare "Numar ore"
