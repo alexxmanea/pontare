@@ -16,11 +16,11 @@ export const FIELDS = {
         project: {
             work: {
                 select: "#fk_proiect",
-                option: "#fk_proiect > option:nth-child(13)",
+                option: "#fk_proiect > option:nth-child(12)",
             },
             vacation: {
                 select: "#fk_proiect",
-                option: "#fk_proiect > option:nth-child(5)",
+                option: "#fk_proiect > option:nth-child(4)",
             },
         },
         date: "#data_efectuare",
