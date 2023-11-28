@@ -303,7 +303,6 @@ const Dashboard = () => {
                             onChange={setStartingWorkday}
                             inputFormat={DATE_FORMAT}
                             mask="__/__/____"
-                            disableFuture
                             shouldDisableDate={isWeekendOrHoliday}
                             renderInput={(params) => (
                                 <TextField fullWidth {...params} />
@@ -317,7 +316,6 @@ const Dashboard = () => {
                             onChange={setEndingWorkday}
                             inputFormat={DATE_FORMAT}
                             mask="__/__/____"
-                            disableFuture
                             shouldDisableDate={isWeekendOrHoliday}
                             renderInput={(params) => (
                                 <TextField fullWidth {...params} />
