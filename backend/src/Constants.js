@@ -16,8 +16,8 @@ export const FIELDS = {
         project: {
             work: {
                 select: "#fk_proiect",
-                // option: "#fk_proiect > option:nth-child(12)",
-                option: "#fk_proiect > option:nth-child(189)",
+                option: "#fk_proiect > option:nth-child(12)",
+                // option: "#fk_proiect > option:nth-child(189)",
             },
             vacation: {
                 select: "#fk_proiect",
