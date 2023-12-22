@@ -224,15 +224,15 @@ export const startServer = (httpServer, firebaseDatabase) => {
 
         await closeBrowser(browser);
 
-        await sendEmailNotification(
-            data,
-            composeEmailManualTimesheetMessage(timesheetHistory)
-        );
+        // await sendEmailNotification(
+        //     data,
+        //     composeEmailManualTimesheetMessage(timesheetHistory)
+        // );
 
-        await sendSlackNotification(
-            data,
-            composeSlackTimesheetMessage(timesheetHistory, data.slackMemberId)
-        );
+        // await sendSlackNotification(
+        //     data,
+        //     composeSlackTimesheetMessage(timesheetHistory, data.slackMemberId)
+        // );
 
         response.end();
     });
@@ -565,18 +565,18 @@ export const runDailyTask = async (database) => {
                 subscribedUsersData[i].data
             );
 
-            await sendEmailNotification(
-                subscribedUsersData[i].data,
-                composeEmailManualTimesheetMessage(timesheetHistory)
-            );
+            // await sendEmailNotification(
+            //     subscribedUsersData[i].data,
+            //     composeEmailManualTimesheetMessage(timesheetHistory)
+            // );
 
-            await sendSlackNotification(
-                subscribedUsersData[i].data,
-                composeSlackTimesheetMessage(
-                    timesheetHistory,
-                    subscribedUsersData[i].data.slackMemberId
-                )
-            );
+            // await sendSlackNotification(
+            //     subscribedUsersData[i].data,
+            //     composeSlackTimesheetMessage(
+            //         timesheetHistory,
+            //         subscribedUsersData[i].data.slackMemberId
+            //     )
+            // );
         }
     }
 
