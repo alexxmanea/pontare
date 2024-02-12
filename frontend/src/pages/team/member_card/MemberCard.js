@@ -11,24 +11,24 @@ const HAVANSESE_PHOTO_URL = "https://dog.ceo/api/breed/havanese/images/random";
 const SHIBA_PHOTO_URL = "https://dog.ceo/api/breed/shiba/images/random";
 
 const USER_STATUS = {
-    working: { status: "Working 🖥️", className: "working", severity: "success" },
+    working: { status: "Working", className: "working", severity: "success" },
     vacation: {
-        status: "Vacation ✈️",
+        status: "Vacation",
         className: "vacation",
         severity: "warning",
     },
     notRegistered: {
-        status: "Not registered yet ❌",
+        status: "Not registered yet",
         className: "notRegistered",
         severity: "error",
     },
     formerEmployee: {
-        status: "Former employee 😢",
+        status: "Former employee",
         className: "formerEmployee",
-        severity: "info",
+        severity: "error",
     },
     transferred: {
-        status: "Transferred 🏢",
+        status: "Transferred",
         className: "formerEmployee",
         severity: "info",
     }
@@ -120,11 +120,6 @@ const MemberCard = ({ data }) => {
                 <div className="memberCard-details">
                     <div className="memberCard-name">{getName(data.email)}</div>
                     <div className="memberCard-email">{data.email}</div>
-                    {data.isRegistered && (
-                        <div className="memberCard-status">
-                            Status: <b>{getUserStatus().status}</b>
-                        </div>
-                    )}
                 </div>
             </div>
             <div className="memberCard-other">
