@@ -20,7 +20,7 @@ import {
     SERVER_ERROR,
     USER_EXISTS,
 } from "../../common/RestApi.js";
-import { isValidEmail, isInoviumEmail } from "../../common/Utils.js";
+import { isValidEmail, isEximprodEmail } from "../../common/Utils.js";
 import { showLoadingScreen } from "../../common/Utils.js";
 
 const SUCCESSFULLY_REGISTERED_TITLE = "Register";
@@ -107,8 +107,8 @@ const Register = () => {
             return "Invalid email.";
         }
 
-        if (!isInoviumEmail(email)) {
-            return "You must register using you Inovium.ro email.";
+        if (!isEximprodEmail(email)) {
+            return "You must register using you @epg.ro or @eximprod.ro email.";
         }
 
         return "";
@@ -158,7 +158,7 @@ const Register = () => {
             <TextField
                 className="register-email"
                 required
-                label="Inovium Email"
+                label="Eximprod Email"
                 variant="outlined"
                 type="text"
                 value={email}

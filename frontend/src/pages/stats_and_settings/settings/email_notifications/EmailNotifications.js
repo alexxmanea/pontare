@@ -2,7 +2,7 @@ import "./EmailNotifications.css";
 import { useState, useEffect } from "react";
 import { useGlobalState } from "../../../../common/GlobalState";
 import { REST_URL, SERVER_ERROR } from "../../../../common/RestApi";
-import { isValidEmail, isInoviumEmail } from "../../../../common/Utils";
+import { isValidEmail, isEximprodEmail } from "../../../../common/Utils";
 import axios from "axios";
 import { TextField, Button } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
@@ -112,7 +112,7 @@ const EmailNotifications = () => {
             <div className="emailNotifications-changeEmail-container">
                 <TextField
                     className="emailNotifications-textfield"
-                    label="Inovium Email"
+                    label="Eximprod Email"
                     variant="outlined"
                     type="text"
                     value={email}
@@ -135,7 +135,7 @@ const EmailNotifications = () => {
                         !email ||
                         !email.length ||
                         !isValidEmail(email) ||
-                        !isInoviumEmail(email) ||
+                        !isEximprodEmail(email) ||
                         email === originalEmail
                     }
                     onClick={changeEmail}>

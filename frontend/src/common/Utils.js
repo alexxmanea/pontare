@@ -30,12 +30,12 @@ export const isValidEmail = (email) => {
     return true;
 };
 
-export const isInoviumEmail = (email) => {
+export const isEximprodEmail = (email) => {
     const emailParts = email.split("@");
 
     const address = emailParts[1];
 
-    if (address !== "inovium.ro") return false;
+    if (address !== "epg.ro" || address !== "eximprod.ro") return false;
 
     return true;
 };
