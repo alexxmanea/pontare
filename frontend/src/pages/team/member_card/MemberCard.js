@@ -6,6 +6,10 @@ import moment from "moment";
 import { DATE_FORMAT } from "../../../common/Constants";
 
 const PHOTO_URL = "https://dog.ceo/api/breeds/image/random";
+const DACHSHUND_PHOTO_URL = "https://dog.ceo/api/breed/Dachshund/images/random";
+const HAVANSESE_PHOTO_URL = "https://dog.ceo/api/breed/Havanese/images/random";
+const SHIBA_PHOTO_URL = "https://dog.ceo/api/breed/Shiba/images/random";
+
 const USER_STATUS = {
     working: { status: "Working 🖥️", className: "working", severity: "success" },
     vacation: {
@@ -34,8 +38,23 @@ const MemberCard = ({ data }) => {
     const [photo, setPhoto] = useState(null);
 
     useEffect(() => {
+        let photoUrl;
+        switch (data.email) {
+            case "alexandru.manea@epg.ro":
+                photoUrl = new URL(DACHSHUND_PHOTO_URL);
+                break;
+            case "mihnea.marin@epg.ro":
+                photoUrl = new URL(SHIBA_PHOTO_URL);
+                break;
+            case "andreea.gavrila@epg.ro":
+                photoUrl = new URL(HAVANSESE_PHOTO_URL);
+                break;
+            default:
+                photoUrl = new URL(PHOTO_URL);
+        }
+
         axios
-            .get(PHOTO_URL)
+            .get(photoUrl)
             .then((response) => {
                 setPhoto(response.data.message);
             })
