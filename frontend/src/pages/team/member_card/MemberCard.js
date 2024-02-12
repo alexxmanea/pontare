@@ -7,17 +7,27 @@ import { DATE_FORMAT } from "../../../common/Constants";
 
 const PHOTO_URL = "https://dog.ceo/api/breeds/image/random";
 const USER_STATUS = {
-    working: { status: "Working", className: "working", severity: "success" },
+    working: { status: "Working 🖥️", className: "working", severity: "success" },
     vacation: {
-        status: "Vacation",
+        status: "Vacation ✈️",
         className: "vacation",
         severity: "warning",
     },
     notRegistered: {
-        status: "Not registered yet",
+        status: "Not registered yet ❌",
         className: "notRegistered",
         severity: "error",
     },
+    formerEmployee: {
+        status: "Former employee 😢",
+        className: "formerEmployee",
+        severity: "info",
+    },
+    transferred: {
+        status: "Transferred 🏢",
+        className: "formerEmployee",
+        severity: "info",
+    }
 };
 
 const MemberCard = ({ data }) => {
@@ -50,6 +60,14 @@ const MemberCard = ({ data }) => {
             return USER_STATUS.notRegistered;
         }
 
+        if (data.email === "cristi.barbu@epg.ro" || data.email === "mihai.girleanu@epg.ro") {
+            return USER_STATUS.formerEmployee;
+        }
+
+        if (data.email === "razvan.bucur@epg.ro") {
+            return USER_STATUS.transferred;
+        }
+
         const today = moment();
         let vacationStart = moment(data.vacationStart, DATE_FORMAT);
         vacationStart.set({
@@ -75,9 +93,8 @@ const MemberCard = ({ data }) => {
         <div className="memberCard-container">
             <div className="memberCard-details-container">
                 <img
-                    className={`memberCard-photo memberCard-photo-${
-                        getUserStatus().className
-                    }`}
+                    className={`memberCard-photo memberCard-photo-${getUserStatus().className
+                        }`}
                     src={photo}
                     alt="Profile picture"
                 />
