@@ -130,6 +130,7 @@ export const startServer = (httpServer, firebaseDatabase) => {
     httpServer.post("/api/submittimesheet", async (request, response) => {
         const timesheet = request?.body?.timesheet;
         const userId = request?.body?.userId;
+        const workingHours = request?.body?.workingHours || 8;
 
         if (!timesheet || !timesheet?.length) {
             response.send(SERVER_ERROR);
@@ -190,7 +191,8 @@ export const startServer = (httpServer, firebaseDatabase) => {
                     page,
                     remoteTimesheetPageContent,
                     currentMoment,
-                    entry.type
+                    workingHours,
+                    entry.type,
                 );
 
                 if (wasAdded) {
@@ -542,6 +544,7 @@ export const runDailyTask = async (database) => {
             page,
             remoteTimesheetPageContent,
             currentMoment,
+            8,
             DAY_TYPES.workday
         );
 

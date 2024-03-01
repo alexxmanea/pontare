@@ -133,6 +133,7 @@ export const addToTimesheet = async (
     page,
     remoteTimesheetPageContent,
     momentDate,
+    workingHours,
     dayType = DAY_TYPES.workday
 ) => {
     if (
@@ -182,7 +183,7 @@ export const addToTimesheet = async (
     await textFieldClearAndType(
         page,
         FIELDS.manopera.hours.element,
-        FIELDS.manopera.hours.value
+        `${workingHours}`
     );
 
     // Selectare checkbox "Este telemunca?"

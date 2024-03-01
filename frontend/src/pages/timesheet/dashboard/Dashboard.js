@@ -4,7 +4,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
-import { Button, CircularProgress, Typography } from "@mui/material";
+import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -47,6 +47,7 @@ const Dashboard = () => {
         waitingToSubmitTimesheetDialogMessage,
         setWaitingToSubmitTimesheetDialogMessage,
     ] = useState([]);
+    const [workingHours, setWorkingHours] = useState(8);
 
     const isValidInterval = (startingDay, endingDay) => {
         return startingDay?.isValid() || endingDay?.isValid();
@@ -226,6 +227,7 @@ const Dashboard = () => {
             .post(`${REST_URL}/api/submittimesheet`, {
                 timesheet: intervalsToSubmit,
                 userId: userId,
+                workingHours: workingHours,
             })
             .then((response) => {
                 console.log(response);
@@ -396,6 +398,21 @@ const Dashboard = () => {
                             Add vacation
                         </Button>
                     </div>
+                </div>
+                <div className="dashboard-workdays-container">
+                    <div className="dashboard-subtitle">Working hours</div>
+                    <FormControl fullWidth>
+                        <InputLabel id="working-hours">Working hours</InputLabel>
+                        <Select
+                            labelId="working-hours"
+                            value={workingHours}
+                            label="Working hours"
+                            onChange={(event) => setWorkingHours(Number(event.target.value))}
+                            >
+                            <MenuItem value={4}>4</MenuItem>
+                            <MenuItem value={8}>8</MenuItem>
+                        </Select>
+                    </FormControl>
                 </div>
             </LocalizationProvider>
             <div className="dashboard-subtitle">Added intervals</div>
