@@ -35,7 +35,7 @@ export const isEximprodEmail = (email) => {
 
     const address = emailParts[1];
 
-    if (address !== "epg.ro" || address !== "eximprod.ro") return false;
+    if (address !== "epg.ro" && address !== "eximprod.ro") return false;
 
     return true;
 };

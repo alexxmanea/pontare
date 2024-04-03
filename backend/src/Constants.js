@@ -11,7 +11,7 @@ export const FIELDS = {
             "Nu sunteti autorizat sa folositi sistemul. Va rugam sa va autentificati!",
     },
     manopera: {
-        main: "#navigation_buyerpg > p > span:nth-child(7) > a",
+        main: "#navigation_buyerpg > p > span > a[href='lista_manopera.php']",
         add: "#subnav_txt > a:nth-child(1)",
         project: {
             work: {
