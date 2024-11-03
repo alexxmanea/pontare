@@ -79,7 +79,7 @@ const MemberCard = ({ data }) => {
             return USER_STATUS.notRegistered;
         }
 
-        if (data.email === "cristi.barbu@epg.ro" || data.email === "mihai.girleanu@epg.ro") {
+        if (data.email === "mihai.girleanu@epg.ro" || data.email === "andrei.popescu@epg.ro") {
             return USER_STATUS.formerEmployee;
         }
 
