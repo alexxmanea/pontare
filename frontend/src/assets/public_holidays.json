@@ -1,24 +1,35 @@
-[
-    { "date": "30/11/2023", "holiday": "Sfântul Andrei" },
-    { "date": "01/12/2023", "holiday": "Ziua Națională a României" },
-    { "date": "25/12/2023", "holiday": "Crăciunul" },
-    { "date": "26/12/2023", "holiday": "Crăciunul" },
-    { "date": "01/01/2024", "holiday": "Anul Nou" },
-    { "date": "02/01/2024", "holiday": "Anul Nou" },
-    { "date": "06/01/2024", "holiday": "Boboteaza" },
-    { "date": "07/01/2024", "holiday": "Sfantul Ioan Botezatorul" },
-    { "date": "24/01/2024", "holiday": "Ziua Unirii Principatelor Române" },
-    { "date": "03/05/2024", "holiday": "Paște ortodox" },
-    { "date": "04/05/2024", "holiday": "Paște ortodox" },
-    { "date": "05/05/2024", "holiday": "Paște ortodox" },
-    { "date": "06/05/2024", "holiday": "Paște ortodox" },
-    { "date": "01/05/2024", "holiday": "Ziua Muncii" },
-    { "date": "01/06/2024", "holiday": "Ziua Copilului" },
-    { "date": "23/06/2024", "holiday": "Rusalii" },
-    { "date": "24/06/2024", "holiday": "A doua zi de Rusalii" },
-    { "date": "15/08/2024", "holiday": "Adormirea Maicii Domnului" },
-    { "date": "30/11/2024", "holiday": "Sfântul Andrei" },
-    { "date": "01/12/2024", "holiday": "Ziua Națională a României" },
-    { "date": "25/12/2024", "holiday": "Crăciunul" },
-    { "date": "26/12/2024", "holiday": "Crăciunul" }
+[ { "date": "01/01/2025", "holiday": "Anul Nou"
+    },
+    { "date": "02/01/2025", "holiday": "Anul Nou"
+    },
+    { "date": "06/01/2025", "holiday": "Boboteaza"
+    },
+    { "date": "07/01/2025", "holiday": "Sfântul Ioan Botezătorul"
+    },
+    { "date": "24/01/2025", "holiday": "Ziua Unirii Principatelor Române"
+    },
+    { "date": "18/04/2025", "holiday": "Vinerea Mare"
+    },
+    { "date": "20/04/2025", "holiday": "Paștele"
+    },
+    { "date": "21/04/2025", "holiday": "Paștele"
+    },
+    { "date": "01/05/2025", "holiday": "Ziua Muncii"
+    },
+    { "date": "01/06/2025", "holiday": "Ziua Copilului"
+    },
+    { "date": "08/06/2025", "holiday": "Rusalii"
+    },
+    { "date": "09/06/2025", "holiday": "Rusalii"
+    },
+    { "date": "15/08/2025", "holiday": "Adormirea Maicii Domnului"
+    },
+    { "date": "30/11/2025", "holiday": "Sfântul Andrei"
+    },
+    { "date": "01/12/2025", "holiday": "Ziua Națională a României"
+    },
+    { "date": "25/12/2025", "holiday": "Crăciunul"
+    },
+    { "date": "26/12/2025", "holiday": "Crăciunul"
+    }
 ]
