@@ -17,7 +17,7 @@ import {
 import { setGlobalState } from "../../common/GlobalState.js";
 import { showLoadingScreen } from "../../common/Utils.js";
 
-const Login = () => {
+export default function Login() {
     const navigate = useNavigate();
 
     const [username, setUsername] = useState("");
@@ -113,7 +113,8 @@ const Login = () => {
                         <IconButton
                             aria-label="toggle password visibility"
                             onClick={() => setShowPassword(!showPassword)}
-                            onMouseDown={() => setShowPassword(!showPassword)}>
+                            onMouseDown={() => setShowPassword(!showPassword)}
+                        >
                             {showPassword ? (
                                 <VisibilityOffIcon />
                             ) : (
@@ -129,21 +130,24 @@ const Login = () => {
             <Alert
                 className="login-error"
                 severity="error"
-                sx={{ visibility: errorMessage ? "visible" : "hidden" }}>
+                sx={{ visibility: errorMessage ? "visible" : "hidden" }}
+            >
                 {errorMessage}
             </Alert>
             <div className="login-submit-container">
                 <Button
                     className="login-submit"
                     variant="contained"
-                    onClick={handleSubmitLoginInfo}>
+                    onClick={handleSubmitLoginInfo}
+                >
                     Login
                 </Button>
                 <div>OR</div>
                 <Button
                     className="login-register"
                     variant="text"
-                    onClick={() => navigate("/register")}>
+                    onClick={() => navigate("/register")}
+                >
                     Create an account
                 </Button>
             </div>
@@ -153,6 +157,4 @@ const Login = () => {
             />
         </div>
     );
-};
-
-export default Login;
+}

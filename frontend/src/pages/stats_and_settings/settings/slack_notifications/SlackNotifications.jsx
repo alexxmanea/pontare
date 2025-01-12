@@ -14,7 +14,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 
-const SlackNotifications = () => {
+export default function SlackNotifications() {
     const [userId] = useGlobalState("userId");
     const [slackSubscription, setSlackSubscription] = useState(false);
     const [slackMemberId, setSlackMemberId] = useState("");
@@ -110,9 +110,7 @@ const SlackNotifications = () => {
 
     return (
         <div className="slackNotifications-container">
-            <Tooltip
-                title="How to find your Slack Member ID"
-                placement="top">
+            <Tooltip title="How to find your Slack Member ID" placement="top">
                 <IconButton
                     className="slackNotifications-tutorial"
                     onClick={() => {
@@ -121,7 +119,8 @@ const SlackNotifications = () => {
                             "_blank",
                             "noopener,noreferrer"
                         );
-                    }}>
+                    }}
+                >
                     <InfoOutlinedIcon />
                 </IconButton>
             </Tooltip>
@@ -138,11 +137,13 @@ const SlackNotifications = () => {
                         endAdornment: (
                             <Tooltip
                                 title="Reset Slack Member ID"
-                                placement="top">
+                                placement="top"
+                            >
                                 <IconButton
                                     onClick={() =>
                                         setSlackMemberId(originalSlackMemberId)
-                                    }>
+                                    }
+                                >
                                     <ReplayIcon />
                                 </IconButton>
                             </Tooltip>
@@ -157,7 +158,8 @@ const SlackNotifications = () => {
                         !slackMemberId.length ||
                         slackMemberId === originalSlackMemberId
                     }
-                    onClick={changeSlackMemberId}>
+                    onClick={changeSlackMemberId}
+                >
                     Change Member ID
                 </Button>
             </div>
@@ -168,7 +170,8 @@ const SlackNotifications = () => {
                 disabled={
                     !originalSlackMemberId || !originalSlackMemberId.length
                 }
-                onClick={toggleSlackSubscription}>
+                onClick={toggleSlackSubscription}
+            >
                 {slackSubscription ? "Enabled" : "Disabled"}
             </Button>
             <Dialog open={dialogFields !== null}>
@@ -182,6 +185,4 @@ const SlackNotifications = () => {
             </Dialog>
         </div>
     );
-};
-
-export default SlackNotifications;
+}

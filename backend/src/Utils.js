@@ -1,5 +1,5 @@
 import { DATE_FORMATS, DAY_TYPES } from "./Constants.js";
-import PUBLIC_HOLIDAYS from "../assets/public_holidays.json" assert { type: "json" };
+import PUBLIC_HOLIDAYS from "../assets/public_holidays.json" with { type: "json" };
 
 export const delay = (milliseconds) => {
     return new Promise((resolve) => setTimeout(resolve, milliseconds));

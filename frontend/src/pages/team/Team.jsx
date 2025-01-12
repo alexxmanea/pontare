@@ -11,7 +11,7 @@ import DialogContent from "@mui/material/DialogContent";
 import { Button } from "@mui/material";
 import { useGlobalState } from "../../common/GlobalState";
 
-const Team = () => {
+export default function Team() {
     const [members, setMembers] = useState([]);
     const [dialogFields, setDialogFields] = useState(null);
     const [userId] = useGlobalState("userId");
@@ -69,6 +69,4 @@ const Team = () => {
             </Dialog>
         </div>
     );
-};
-
-export default Team;
+}

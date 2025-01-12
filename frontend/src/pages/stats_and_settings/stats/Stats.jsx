@@ -18,7 +18,7 @@ import { DATE_FORMAT } from "../../../common/Constants";
 import Divider from "@mui/material/Divider";
 import VacationIcon from "../../../assets/images/VacationIcon.png";
 
-const Stats = () => {
+export default function Stats() {
     const [userId] = useGlobalState("userId");
     const [workDaysAdded, setWorkDaysAdded] = useState(0);
     const [vacationDaysText, setVacationDaysText] = useState(0);
@@ -177,13 +177,15 @@ const Stats = () => {
                             endAdornment: (
                                 <Tooltip
                                     title="Reset default vacation days"
-                                    placement="top">
+                                    placement="top"
+                                >
                                     <IconButton
                                         onClick={() =>
                                             setVacationDaysText(
                                                 defaultVacationDays
                                             )
-                                        }>
+                                        }
+                                    >
                                         <ReplayIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -198,7 +200,8 @@ const Stats = () => {
                             defaultVacationDays === vacationDaysText ||
                             vacationDaysText < 0 ||
                             vacationDaysText > 75
-                        }>
+                        }
+                    >
                         Change
                     </Button>
                 </div>
@@ -238,6 +241,4 @@ const Stats = () => {
             </Dialog>
         </div>
     );
-};
-
-export default Stats;
+}

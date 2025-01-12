@@ -12,7 +12,7 @@ import PUBLIC_HOLIDAYS from "../../../assets/public_holidays.json";
 const PUBLIC_HOLIDAYS_URL = "https://www.zileliberelegale.ro/";
 const PUBLIC_HOLIDAYS_SOURCE = "Source: zileliberelegale.ro";
 
-const Holidays = () => {
+export default function Holidays() {
     return (
         <div className="holidays-container">
             <Tooltip title={PUBLIC_HOLIDAYS_SOURCE} placement="top">
@@ -24,7 +24,8 @@ const Holidays = () => {
                             "_blank",
                             "noopener,noreferrer"
                         );
-                    }}>
+                    }}
+                >
                     <InfoOutlinedIcon />
                 </IconButton>
             </Tooltip>
@@ -51,6 +52,4 @@ const Holidays = () => {
             </div>
         </div>
     );
-};
-
-export default Holidays;
+}

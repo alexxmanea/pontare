@@ -15,7 +15,7 @@ import DialogContent from "@mui/material/DialogContent";
 import Button from "@mui/material/Button";
 import { DAY_TYPES } from "../../../common/Constants";
 
-const TimesheetHistory = () => {
+export default function TimesheetHistory() {
     const [userId] = useGlobalState("userId");
     const [timesheetHistory, setTimesheetHistory] = useState(null);
     const [dialogFields, setDialogFields] = useState(null);
@@ -30,7 +30,9 @@ const TimesheetHistory = () => {
             .then((response) => {
                 const data = response.data;
                 data.timesheetHistory &&
-                    setTimesheetHistory(sortTimesheetHistory(data.timesheetHistory));
+                    setTimesheetHistory(
+                        sortTimesheetHistory(data.timesheetHistory)
+                    );
             })
             .catch((error) => {
                 setDialogFields({
@@ -66,22 +68,26 @@ const TimesheetHistory = () => {
                         <TableRow>
                             <TableCell
                                 className="timesheetHistory-table-header-cell"
-                                align="left">
+                                align="left"
+                            >
                                 Starting day
                             </TableCell>
                             <TableCell
                                 className="timesheetHistory-table-header-cell"
-                                align="left">
+                                align="left"
+                            >
                                 Ending day
                             </TableCell>
                             <TableCell
                                 className="timesheetHistory-table-header-cell"
-                                align="left">
+                                align="left"
+                            >
                                 Days used
                             </TableCell>
                             <TableCell
                                 className="timesheetHistory-table-header-cell"
-                                align="left">
+                                align="left"
+                            >
                                 Type
                             </TableCell>
                         </TableRow>
@@ -89,7 +95,8 @@ const TimesheetHistory = () => {
                     <TableBody>
                         {timesheetHistory?.map((row, index) => (
                             <TableRow
-                                key={`timesheetHistory-table-row-${index}`}>
+                                key={`timesheetHistory-table-row-${index}`}
+                            >
                                 <TableCell align="left">
                                     {row.startingDay}
                                 </TableCell>
@@ -120,6 +127,4 @@ const TimesheetHistory = () => {
             </Dialog>
         </div>
     );
-};
-
-export default TimesheetHistory;
+}

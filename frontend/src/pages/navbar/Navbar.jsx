@@ -12,7 +12,7 @@ import { useGlobalState, setGlobalState } from "../../common/GlobalState.js";
 const LOGOUT_TITLE = "Logout";
 const LOGOUT_MESSAGE = "Are you sure you want to logout?";
 
-const Navbar = () => {
+export default function Navbar() {
     const navigate = useNavigate();
     const [authenticatedUser] = useGlobalState("authenticatedUser");
     const [showLogoutDialog, setShowLogoutDialog] = useState(false);
@@ -38,7 +38,8 @@ const Navbar = () => {
             </div>
             <Button
                 className="navbar-logout"
-                onClick={() => setShowLogoutDialog(true)}>
+                onClick={() => setShowLogoutDialog(true)}
+            >
                 Logout
             </Button>
             <Dialog open={showLogoutDialog}>
@@ -57,6 +58,4 @@ const Navbar = () => {
             </Dialog>
         </div>
     );
-};
-
-export default Navbar;
+}

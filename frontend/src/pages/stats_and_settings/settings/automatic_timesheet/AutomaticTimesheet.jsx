@@ -9,7 +9,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 
-const AutomaticTimesheet = () => {
+export default function AutomaticTimesheet() {
     const [userId] = useGlobalState("userId");
     const [automaticTimesheetSubscription, setAutomaticTimesheetSubscription] =
         useState(false);
@@ -78,7 +78,8 @@ const AutomaticTimesheet = () => {
                 className="automaticTimesheet-button"
                 variant="contained"
                 color={automaticTimesheetSubscription ? "success" : "error"}
-                onClick={toggleAutomaticTimesheet}>
+                onClick={toggleAutomaticTimesheet}
+            >
                 {automaticTimesheetSubscription ? "Enabled" : "Disabled"}
             </Button>
             <Dialog open={dialogFields !== null}>
@@ -92,6 +93,4 @@ const AutomaticTimesheet = () => {
             </Dialog>
         </div>
     );
-};
-
-export default AutomaticTimesheet;
+}

@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import EMAIL_CREDENTIALS from "../../secure/email_credentials.json" assert { type: "json" };
+import EMAIL_CREDENTIALS from "../../secure/email_credentials.json" with { type: "json" };
 import { parseDatesToString } from "../Utils.js";
 import { DAY_TYPES } from "../Constants.js";
 

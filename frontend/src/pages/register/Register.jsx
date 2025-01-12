@@ -27,7 +27,7 @@ const SUCCESSFULLY_REGISTERED_TITLE = "Register";
 const SUCCESSFULLY_REGISTERED_MESSAGE =
     "Your account has been successfully created. Proceed to login.";
 
-const Register = () => {
+export default function Register() {
     const navigate = useNavigate();
 
     const [username, setUsername] = useState("");
@@ -142,7 +142,8 @@ const Register = () => {
                         <IconButton
                             aria-label="toggle password visibility"
                             onClick={() => setShowPassword(!showPassword)}
-                            onMouseDown={() => setShowPassword(!showPassword)}>
+                            onMouseDown={() => setShowPassword(!showPassword)}
+                        >
                             {showPassword ? (
                                 <VisibilityOffIcon />
                             ) : (
@@ -170,21 +171,24 @@ const Register = () => {
             <Alert
                 className="register-error"
                 severity="error"
-                sx={{ visibility: errorMessage ? "visible" : "hidden" }}>
+                sx={{ visibility: errorMessage ? "visible" : "hidden" }}
+            >
                 {errorMessage}
             </Alert>
             <div className="register-submit-container">
                 <Button
                     className="register-submit"
                     variant="contained"
-                    onClick={handleSubmitRegisterInfo}>
+                    onClick={handleSubmitRegisterInfo}
+                >
                     Register
                 </Button>
                 <div>OR</div>
                 <Button
                     className="register-login"
                     variant="text"
-                    onClick={() => navigate("/login")}>
+                    onClick={() => navigate("/login")}
+                >
                     Login with an existing account
                 </Button>
             </div>
@@ -192,8 +196,7 @@ const Register = () => {
                 className="register-loading"
                 style={{ visibility: isLoading ? "visible" : "hidden" }}
             />
-            <Dialog
-                open={showRegisteredDialog}>
+            <Dialog open={showRegisteredDialog}>
                 <DialogTitle>{SUCCESSFULLY_REGISTERED_TITLE}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -208,6 +211,4 @@ const Register = () => {
             </Dialog>
         </div>
     );
-};
-
-export default Register;
+}

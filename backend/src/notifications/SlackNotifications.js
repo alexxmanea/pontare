@@ -1,5 +1,5 @@
 import axios from "axios";
-import SLACK_WEBHOOKS from "../../secure/slack_webhooks.json" assert { type: "json" };
+import SLACK_WEBHOOKS from "../../secure/slack_webhooks.json" with { type: "json" };
 import { parseDatesToString } from "../Utils.js";
 import { DAY_TYPES } from "../Constants.js";
 

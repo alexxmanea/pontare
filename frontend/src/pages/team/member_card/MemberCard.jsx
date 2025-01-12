@@ -31,10 +31,10 @@ const USER_STATUS = {
         status: "Transferred",
         className: "formerEmployee",
         severity: "info",
-    }
+    },
 };
 
-const MemberCard = ({ data }) => {
+export default function MemberCard({ data }) {
     const [photo, setPhoto] = useState(null);
 
     useEffect(() => {
@@ -79,7 +79,10 @@ const MemberCard = ({ data }) => {
             return USER_STATUS.notRegistered;
         }
 
-        if (data.email === "mihai.girleanu@epg.ro" || data.email === "andrei.popescu@epg.ro") {
+        if (
+            data.email === "mihai.girleanu@epg.ro" ||
+            data.email === "andrei.popescu@epg.ro"
+        ) {
             return USER_STATUS.formerEmployee;
         }
 
@@ -112,8 +115,9 @@ const MemberCard = ({ data }) => {
         <div className="memberCard-container">
             <div className="memberCard-details-container">
                 <img
-                    className={`memberCard-photo memberCard-photo-${getUserStatus().className
-                        }`}
+                    className={`memberCard-photo memberCard-photo-${
+                        getUserStatus().className
+                    }`}
                     src={photo}
                     alt="Profile picture"
                 />
@@ -125,12 +129,11 @@ const MemberCard = ({ data }) => {
             <div className="memberCard-other">
                 <Alert
                     className="memberCard-alert"
-                    severity={getUserStatus().severity}>
+                    severity={getUserStatus().severity}
+                >
                     {getUserStatus().status}
                 </Alert>
             </div>
         </div>
     );
-};
-
-export default MemberCard;
+}

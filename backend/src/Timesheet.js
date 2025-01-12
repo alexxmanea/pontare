@@ -17,7 +17,7 @@ const textFieldClearAndType = async (page, element, value) => {
 
 const launchBrowserOnMainPage = async () => {
     const browser = await puppeteer.launch({
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        args: ["--no-sandbox", "--disable-setuid-sandbox", '--disable-gpu'],
         executablePath: "/usr/bin/chromium-browser",
         defaultViewport: null,
     });

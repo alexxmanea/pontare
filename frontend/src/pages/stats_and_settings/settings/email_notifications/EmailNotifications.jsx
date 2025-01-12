@@ -13,7 +13,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 
-const EmailNotifications = () => {
+export default function EmailNotifications() {
     const [userId] = useGlobalState("userId");
     const [emailSubscription, setEmailSubscription] = useState(false);
     const [originalEmail, setOriginalEmail] = useState("");
@@ -121,7 +121,8 @@ const EmailNotifications = () => {
                         endAdornment: (
                             <Tooltip title="Reset Email" placement="top">
                                 <IconButton
-                                    onClick={() => setEmail(originalEmail)}>
+                                    onClick={() => setEmail(originalEmail)}
+                                >
                                     <ReplayIcon />
                                 </IconButton>
                             </Tooltip>
@@ -138,7 +139,8 @@ const EmailNotifications = () => {
                         !isEximprodEmail(email) ||
                         email === originalEmail
                     }
-                    onClick={changeEmail}>
+                    onClick={changeEmail}
+                >
                     Change email
                 </Button>
             </div>
@@ -146,7 +148,8 @@ const EmailNotifications = () => {
                 className="emailNotifications-button"
                 variant="contained"
                 color={emailSubscription ? "success" : "error"}
-                onClick={toggleEmailSubscription}>
+                onClick={toggleEmailSubscription}
+            >
                 {emailSubscription ? "Enabled" : "Disabled"}
             </Button>
             <Dialog open={dialogFields !== null}>
@@ -160,6 +163,4 @@ const EmailNotifications = () => {
             </Dialog>
         </div>
     );
-};
-
-export default EmailNotifications;
+}

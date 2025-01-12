@@ -1,6 +1,6 @@
 const REST_PROTOCOL = "https";
 const REST_ADDRESS = "pontare.go.ro";
-const REST_PORT = "3001";
+const REST_PORT = "443";
 export const REST_URL = `${REST_PROTOCOL}://${REST_ADDRESS}:${REST_PORT}`;
 
 export const INVALID_CREDENTIALS = "invalid_credentials";

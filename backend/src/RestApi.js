@@ -1,53 +1,44 @@
-import express from "express";
-import https from "https";
-import fs from "fs";
-import path from "path";
-import cors from "cors";
 import bodyParser from "body-parser";
+import express from "express";
+import fs from "fs";
+import https from "https";
+import moment from "moment";
+import path from "path";
+import { exit } from "process";
 import {
+    ADD_TO_TIMESHEET_DELAY,
+    DATE_FORMATS,
+    DAY_TYPES,
+    SERVER_ERROR,
+} from "./Constants.js";
+import {
+    changeDefaultVacationDays,
+    changeEmail,
+    changeSlackMemberId,
     checkUserCredentials,
+    getDailyTasks,
+    getTeamMembers,
     getUserData,
+    getUsers,
     insertUser,
-    updateUser,
+    markDailyTask,
     toggleAutomaticTimesheet,
     toggleEmailSubscription,
     toggleSlackSubscription,
-    changeEmail,
-    changeSlackMemberId,
-    changeDefaultVacationDays,
-    markDailyTask,
-    getUsers,
-    getDailyTasks,
-    getTeamMembers,
+    updateUser,
 } from "./Firebase.js";
 import {
     addToTimesheet,
     checkValidTimesheetCredentials,
     closeBrowser,
-    startPageAndLogin,
     getRemoteTimesheetPageContent,
+    startPageAndLogin,
 } from "./Timesheet.js";
-import {
-    DATE_FORMATS,
-    ADD_TO_TIMESHEET_DELAY,
-    DAY_TYPES,
-    SERVER_ERROR,
-} from "./Constants.js";
 import { delay } from "./Utils.js";
-import moment from "moment";
-import {
-    sendSlackNotification,
-    composeSlackTimesheetMessage,
-} from "./notifications/SlackNotifications.js";
-import {
-    sendEmailNotification,
-    composeEmailManualTimesheetMessage,
-} from "./notifications/EmailNotifications.js";
-import { exit } from "process";
 
 const REST_PROTOCOL = "https";
 const REST_ADDRESS = "pontare.go.ro";
-const REST_PORT = "3001";
+const REST_PORT = "443";
 const REST_URL = `${REST_PROTOCOL}://${REST_ADDRESS}`;
 
 const SSL_CERT_PATH = "secure/certificates/certificate.pem";
@@ -79,8 +70,11 @@ const getSslCredentials = () => {
 };
 
 const addServerOptions = (httpServer) => {
-    httpServer.use(cors());
     httpServer.use(bodyParser.json());
+
+    httpServer.use(
+        express.static(path.join(process.cwd(), "frontend-build"))
+    );
 };
 
 export const startServer = (httpServer, firebaseDatabase) => {
@@ -192,7 +186,7 @@ export const startServer = (httpServer, firebaseDatabase) => {
                     remoteTimesheetPageContent,
                     currentMoment,
                     workingHours,
-                    entry.type,
+                    entry.type
                 );
 
                 if (wasAdded) {

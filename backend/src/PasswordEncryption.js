@@ -1,5 +1,5 @@
 import CryptoJS from "crypto-js";
-import PRIVATE_KEY from "../secure/password_encryption_private_key.json" assert { type: "json" };
+import PRIVATE_KEY from "../secure/password_encryption_private_key.json" with { type: "json" };
 
 export const encryptPassword = (password) => {
     return CryptoJS.AES.encrypt(password, PRIVATE_KEY.private_key).toString();

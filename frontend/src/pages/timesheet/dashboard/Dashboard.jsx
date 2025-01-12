@@ -4,7 +4,15 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
-import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import {
+    Button,
+    CircularProgress,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    Typography,
+} from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -22,9 +30,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import axios from "axios";
 import { REST_URL } from "../../../common/RestApi.js";
-import { useGlobalState } from "../../../common/GlobalState";
-import { isWeekendOrHoliday } from "../../../common/Utils";
-import { DATE_FORMAT, DAY_TYPES } from "../../../common/Constants";
+import { useGlobalState } from "../../../common/GlobalState.js";
+import { isWeekendOrHoliday } from "../../../common/Utils.js";
+import { DATE_FORMAT, DAY_TYPES } from "../../../common/Constants.js";
 
 const moment = extendMoment(Moment);
 moment.locale("ro", {
@@ -33,7 +41,7 @@ moment.locale("ro", {
     },
 });
 
-const Dashboard = () => {
+export default function Dashboard() {
     const [userId] = useGlobalState("userId");
     const [startingWorkday, setStartingWorkday] = useState(null);
     const [endingWorkday, setEndingWorkday] = useState(null);
@@ -151,16 +159,16 @@ const Dashboard = () => {
                 key={`composeCollisionsDialogMessage-${message.length + 1}`}
                 style={{
                     marginBottom: "1rem",
-                }}>{`The interval you are trying to add (${parseIntervalToString(
+                }}
+            >{`The interval you are trying to add (${parseIntervalToString(
                 intervalToAdd
             )}) (${dayType}) collides with the following existing intervals:`}</Typography>
         );
         collisions.forEach((collision) => {
             message.push(
                 <Typography
-                    key={`composeCollisionsDialogMessage-${
-                        message.length + 1
-                    }`}>{`- ${parseIntervalToString(collision.interval)} (${
+                    key={`composeCollisionsDialogMessage-${message.length + 1}`}
+                >{`- ${parseIntervalToString(collision.interval)} (${
                     collision.type
                 })`}</Typography>
             );
@@ -174,7 +182,8 @@ const Dashboard = () => {
             <Typography
                 key={`composeSubmitTimesheetDialogMessage-${
                     message.length + 1
-                }`}>
+                }`}
+            >
                 Are you sure you want to submit the following Timesheet?
             </Typography>
         );
@@ -183,7 +192,8 @@ const Dashboard = () => {
                 key={`composeSubmitTimesheetDialogMessage-${
                     message.length + 1
                 }`}
-                style={{ marginBottom: "1rem" }}>
+                style={{ marginBottom: "1rem" }}
+            >
                 This action is irreversible, so you have to manually remove
                 submitted days from <b>E-Trans</b>.
             </Typography>
@@ -193,7 +203,8 @@ const Dashboard = () => {
                 <Typography
                     key={`composeSubmitTimesheetDialogMessage-${
                         message.length + 1
-                    }`}>{`- ${parseIntervalToString(row.interval)} (${
+                    }`}
+                >{`- ${parseIntervalToString(row.interval)} (${
                     row.type
                 })`}</Typography>
             );
@@ -230,7 +241,6 @@ const Dashboard = () => {
                 workingHours: workingHours,
             })
             .then((response) => {
-                console.log(response);
                 setWaitingToSubmitTimesheetDialogMessage(
                     composeTimesheetSubmittedDialogMessage(true)
                 );
@@ -265,7 +275,8 @@ const Dashboard = () => {
                 key={`composeWaitingToSubmitTimesheetDialogMessage-${
                     message.length + 1
                 }`}
-                style={{ marginBottom: "1rem" }}>
+                style={{ marginBottom: "1rem" }}
+            >
                 Your Timesheet is submitting. Please wait...
             </Typography>
         );
@@ -274,11 +285,11 @@ const Dashboard = () => {
                 className="dashboard-submit-loading"
                 key={`composeWaitingToSubmitTimesheetDialogMessage-${
                     message.length + 1
-                }`}>
+                }`}
+            >
                 <CircularProgress />
             </div>
         );
-        console.log(message);
         return message;
     };
 
@@ -342,7 +353,8 @@ const Dashboard = () => {
                                     setEndingWorkday,
                                     DAY_TYPES.workday
                                 )
-                            }>
+                            }
+                        >
                             Add workdays
                         </Button>
                     </div>
@@ -394,7 +406,8 @@ const Dashboard = () => {
                                     setEndingVacation,
                                     DAY_TYPES.vacation
                                 )
-                            }>
+                            }
+                        >
                             Add vacation
                         </Button>
                     </div>
@@ -402,13 +415,17 @@ const Dashboard = () => {
                 <div className="dashboard-workdays-container">
                     <div className="dashboard-subtitle">Working hours</div>
                     <FormControl fullWidth>
-                        <InputLabel id="working-hours">Working hours</InputLabel>
+                        <InputLabel id="working-hours">
+                            Working hours
+                        </InputLabel>
                         <Select
                             labelId="working-hours"
                             value={workingHours}
                             label="Working hours"
-                            onChange={(event) => setWorkingHours(Number(event.target.value))}
-                            >
+                            onChange={(event) =>
+                                setWorkingHours(Number(event.target.value))
+                            }
+                        >
                             <MenuItem value={4}>4</MenuItem>
                             <MenuItem value={8}>8</MenuItem>
                         </Select>
@@ -423,7 +440,8 @@ const Dashboard = () => {
                             <TableCell align="left" width={"1px"}>
                                 <Tooltip
                                     title="Delete all intervals"
-                                    placement="top">
+                                    placement="top"
+                                >
                                     <IconButton onClick={clearIntervals}>
                                         <ReplayIcon />
                                     </IconButton>
@@ -431,12 +449,14 @@ const Dashboard = () => {
                             </TableCell>
                             <TableCell
                                 className="dashboard-table-header-cell"
-                                align="left">
+                                align="left"
+                            >
                                 Date
                             </TableCell>
                             <TableCell
                                 className="dashboard-table-header-cell"
-                                align="left">
+                                align="left"
+                            >
                                 Type
                             </TableCell>
                         </TableRow>
@@ -444,15 +464,18 @@ const Dashboard = () => {
                     <TableBody>
                         {addedIntervals?.map((row, index) => (
                             <TableRow
-                                key={`dashboard-timesheet-table-row-${index}`}>
+                                key={`dashboard-timesheet-table-row-${index}`}
+                            >
                                 <TableCell align="left">
                                     <Tooltip
                                         title="Delete interval"
-                                        placement="top">
+                                        placement="top"
+                                    >
                                         <IconButton
                                             onClick={() =>
                                                 removeInterval(index)
-                                            }>
+                                            }
+                                        >
                                             <ClearIcon />
                                         </IconButton>
                                     </Tooltip>
@@ -474,7 +497,8 @@ const Dashboard = () => {
                     setSubmitTimesheetDialogMessage(
                         composeSubmitTimesheetDialogMessage()
                     );
-                }}>
+                }}
+            >
                 Submit timesheet
             </Button>
             <Dialog open={collisionsDialogMessage.length > 0}>
@@ -483,7 +507,8 @@ const Dashboard = () => {
                 <DialogActions>
                     <Button
                         onClick={() => setCollisionsDialogMessage([])}
-                        autoFocus>
+                        autoFocus
+                    >
                         OK
                     </Button>
                 </DialogActions>
@@ -516,7 +541,8 @@ const Dashboard = () => {
                             autoFocus
                             onClick={() =>
                                 setWaitingToSubmitTimesheetDialogMessage([])
-                            }>
+                            }
+                        >
                             OK
                         </Button>
                     </DialogActions>
@@ -524,6 +550,4 @@ const Dashboard = () => {
             </Dialog>
         </div>
     );
-};
-
-export default Dashboard;
+}

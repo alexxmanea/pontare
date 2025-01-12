@@ -2,7 +2,7 @@ import "./Timesheet.css";
 import Dashboard from "./dashboard/Dashboard";
 import Holidays from "./holidays/Holidays";
 
-const Timesheet = () => {
+export default function Timesheet() {
     return (
         <div className="timesheet-container">
             <Dashboard />
@@ -10,5 +10,3 @@ const Timesheet = () => {
         </div>
     );
 };
-
-export default Timesheet;

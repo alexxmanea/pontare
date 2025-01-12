@@ -3,7 +3,7 @@ import Settings from "./settings/Settings";
 import Stats from "./stats/Stats";
 import TimesheetHistory from "./timesheet_history/TimesheetHistory";
 
-const StatsAndSettings = () => {
+export default function StatsAndSettings() {
     return (
         <div className="statsAndSettings-container">
             <Settings />
@@ -11,6 +11,4 @@ const StatsAndSettings = () => {
             <Stats />
         </div>
     );
-};
-
-export default StatsAndSettings;
+}

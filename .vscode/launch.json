@@ -1,5 +1,4 @@
 {
-    "version": "0.2.0",
     "configurations": [
         {
             "name": "Launch Chrome",
@@ -15,7 +14,7 @@
             "skipFiles": ["<node_internals>/**"],
             "cwd": "${workspaceFolder}/backend",
             "program": "${workspaceFolder}/backend/src/pontare.js",
-            "runtimeExecutable": "/usr/local/lib/nodejs/node-v16.15.1-linux-armv7l/bin//node",
+            "runtimeExecutable": "node",
             "runtimeArgs": ["--trace-warnings"],
             "console": "integratedTerminal"
         }

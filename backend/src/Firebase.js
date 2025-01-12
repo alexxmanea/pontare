@@ -1,6 +1,6 @@
 import { initializeApp, cert } from "firebase-admin/app";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
-import FIREBASE_DETAILS from "../secure/firebase.json" assert { type: "json" };
+import FIREBASE_DETAILS from "../secure/firebase.json" with { type: "json" };
 import { encryptPassword, decryptPassword } from "./PasswordEncryption.js";
 import { DEFAULT_USER_DATA } from "./Constants.js";
 

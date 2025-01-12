@@ -10,7 +10,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./routing/ProtectedRoutes";
 import UnknownRoute from "./routing/UnknownRoute";
 
-function App() {
+export default function App() {
     return (
         <BrowserRouter>
             <Routes>
@@ -31,5 +31,3 @@ function App() {
         </BrowserRouter>
     );
 }
-
-export default App;
