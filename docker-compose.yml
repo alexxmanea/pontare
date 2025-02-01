@@ -1,0 +1,58 @@
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: bridge
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Bucharest
+      - VERSION=docker
+    ports:
+      - 32400:32400
+      - 1900:1900
+      - 3005:3005
+      - 5353:5353
+      - 8324:8324
+      - 32410:32410
+      - 32412:32412
+      - 32413:32413
+      - 32414:32414
+      - 32469:32469
+    volumes:
+      - /mnt/SSD/Plex/config:/config
+      - /mnt/SSD/Plex/Movies:/movies_ssd
+      - /mnt/SSD/Plex/Shows:/shows_ssd
+      - /mnt/HDD/Plex/Movies:/movies_hdd
+      - /mnt/HDD/Plex/Shows:/shows_hdd
+      - /mnt/Plex/Movies:/movies_pi
+      - /mnt/Plex/Shows:/shows_pi
+    devices:
+      - /dev/dri/card0:/dev/dri/card0
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    restart: unless-stopped
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    network_mode: bridge
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Bucharest
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    volumes:
+      - /mnt/SSD/qbittorrent/config:/config
+      - /mnt/downloads:/downloads
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+  pontare:
+    image: alexxmanea/personal:pontare-1.0.0
+    container_name: pontare
+    ports:
+      - 443:443
+    privileged: true
+    restart: unless-stopped
